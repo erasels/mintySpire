@@ -70,7 +70,7 @@ public class MintySpire implements
                 });
         settingsPanel.addUIElement(ERBtn);
 
-        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels", "TODO", settingsPanel);
+        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
 
     @Override
