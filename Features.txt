@@ -1,2 +1,3 @@
 Creatures with intangible become transparent
 Pentograph glows before a boss room
+Halfway healthbar for bosses that need it
