@@ -8,7 +8,6 @@ import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.IntangiblePlayerPower;
 import com.megacrit.cardcrawl.powers.IntangiblePower;
 import javassist.CannotCompileException;
@@ -23,7 +22,7 @@ public class CreatureIntagibleTransparency {
     public static class RenderAtlasColorChanger {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(AbstractMonster __instance, SpriteBatch sb) {
-            if(__instance.hasPower(IntangiblePower.POWER_ID)) {
+            if(hasAnyPower(__instance, IntangiblePlayerPower.POWER_ID, IntangiblePower.POWER_ID)) {
                 sb.setColor(__instance.tint.color.cpy().mul(1, 1, 1, 0.25f));
             }
         }
@@ -40,7 +39,7 @@ public class CreatureIntagibleTransparency {
     public static class RenderSkeletonColorChanger {
         @SpireInsertPatch(locator = Locator.class, localvars = {"skeleton"})
         public static void Insert(AbstractMonster __instance, SpriteBatch sb, @ByRef Skeleton[] tmp) {
-            if(__instance.hasPower(IntangiblePower.POWER_ID)) {
+            if(hasAnyPower(__instance, IntangiblePlayerPower.POWER_ID, IntangiblePower.POWER_ID)) {
                 tmp[0].setColor(__instance.tint.color.cpy().mul(1, 1, 1, 0.25f));
             }
         }
@@ -53,10 +52,11 @@ public class CreatureIntagibleTransparency {
         }
     }
 
-    public static boolean hasPower(AbstractCreature c, String targetID) {
-        for (AbstractPower p : c.powers) {
-            if (p.ID.equals(targetID))
+    public static boolean hasAnyPower(AbstractCreature c, String... powers) {
+        for(String s : powers) {
+            if(c.hasPower(s)) {
                 return true;
+            }
         }
         return false;
     }
