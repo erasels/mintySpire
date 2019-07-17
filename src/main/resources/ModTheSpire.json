@@ -1,0 +1,11 @@
+{
+  "modid": "mintyspire",
+  "name": "Minty Spire (QoL Compilation)",
+  "author_list": ["erasels"],
+  "description": "${project.description}",
+  "version": "${project.version}",
+  "sts_version": "${SlayTheSpire.version}",
+  "mts_version": "${ModTheSpire.version}",
+  "dependencies": ["basemod"],
+  "update_json": ""
+}
