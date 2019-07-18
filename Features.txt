@@ -1,3 +1,5 @@
 Creatures with intangible become transparent
 Pentograph glows before a boss room
-Halfway healthbar for bosses that need it
+Frozen Eye preview (kio)
+PenNib and Necronomicon change the border glow of affected cards and show in the corner
+Display the amount of health at which certain bosses change their behavior

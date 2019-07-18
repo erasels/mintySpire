@@ -33,18 +33,18 @@ public class MintySpire implements
 
         try {
             Properties defaults = new Properties();
-            defaults.put("EndRestart", Boolean.toString(true));
+            defaults.put("ShowHalfHealth", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static boolean isER() {
+    public static boolean showHH() {
         if (modConfig == null) {
             return false;
         }
-        return modConfig.getBool("EndRestart");
+        return modConfig.getBool("ShowHalfHealth");
     }
 
     @Override
@@ -55,12 +55,12 @@ public class MintySpire implements
         String[] TEXT = UIStrings.TEXT;
 
         ModPanel settingsPanel = new ModPanel();
-        ModLabeledToggleButton ERBtn = new ModLabeledToggleButton(TEXT[0], 350, 700, Settings.CREAM_COLOR, FontHelper.charDescFont, isER(), settingsPanel, l -> {
+        ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], 350, 700, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
         },
                 button ->
                 {
                     if (modConfig != null) {
-                        modConfig.setBool("EndRestart", button.enabled);
+                        modConfig.setBool("ShowHalfHealth", button.enabled);
                         try {
                             modConfig.save();
                         } catch (IOException e) {
@@ -68,7 +68,7 @@ public class MintySpire implements
                         }
                     }
                 });
-        settingsPanel.addUIElement(ERBtn);
+        settingsPanel.addUIElement(HHBtn);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
