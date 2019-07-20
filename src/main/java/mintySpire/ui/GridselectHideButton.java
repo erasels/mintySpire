@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import mintySpire.MintySpire;
 
@@ -28,7 +29,6 @@ public class GridselectHideButton {
     private static final float HIDE_X = SHOW_X + 400.0F * Settings.scale;
     private float current_x;
     private float target_x;
-    private float controller_offset_x;
     private boolean isHidden;
     public boolean isDisabled;
     public boolean isHovered;
@@ -51,7 +51,6 @@ public class GridselectHideButton {
     public GridselectHideButton() {
         this.current_x = HIDE_X;
         this.target_x = this.current_x;
-        this.controller_offset_x = 0.0F;
         this.isHidden = true;
         this.isDisabled = true;
         this.isHovered = false;
@@ -69,6 +68,9 @@ public class GridselectHideButton {
     }
 
     public void update() {
+        if(!(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
+            return;
+        }
         if (!this.isHidden) {
             updateGlow();
             this.hb.update();
@@ -149,6 +151,9 @@ public class GridselectHideButton {
     }
 
     public void render(SpriteBatch sb) {
+        if(!(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
+            return;
+        }
         sb.setColor(Color.WHITE);
         renderShadow(sb);
         sb.setColor(this.glowColor);
