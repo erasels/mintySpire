@@ -13,9 +13,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import mintySpire.MintySpire;
 
@@ -26,7 +24,7 @@ public class GridselectHideButton {
     private static final int H = 256;
     private static final Color HOVER_BLEND_COLOR = new Color(1.0F, 1.0F, 1.0F, 0.3F);
     private static final Color TEXT_DISABLED_COLOR = new Color(0.6F, 0.6F, 0.6F, 1.0F);
-    private static final float SHOW_X = Settings.WIDTH - 256.0F * Settings.scale, DRAW_Y = 256.0F * Settings.scale;
+    private static final float SHOW_X = Settings.WIDTH - 256.0F * Settings.scale, DRAW_Y = 28.0F * Settings.scale;
     private static final float HIDE_X = SHOW_X + 400.0F * Settings.scale;
     private float current_x;
     private float target_x;
