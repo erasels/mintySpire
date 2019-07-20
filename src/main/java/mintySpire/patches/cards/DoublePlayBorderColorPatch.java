@@ -45,6 +45,15 @@ public class DoublePlayBorderColorPatch {
     public static boolean shouldChangeGlow(AbstractCard c) {
         if(CardCrawlGame.isInARun()) {
             if (c.type == AbstractCard.CardType.ATTACK) {
+                //Pennib
+                PenNib pn = (PenNib) AbstractDungeon.player.getRelic(PenNib.ID);
+                if (pn != null) {
+                    if (pn.counter == PenNib.COUNT - 1) {
+                        cardFields.isPenAff.set(c, true);
+                        return true;
+                    }
+                }
+
                 //Necro
                 if (c.costForTurn > 1 || (c.cost == -1 && AbstractDungeon.player.energy.energy > 1)) {
                     Necronomicon nm = (Necronomicon) AbstractDungeon.player.getRelic(Necronomicon.ID);
@@ -55,15 +64,6 @@ public class DoublePlayBorderColorPatch {
                         }
                     }
                 }
-                //Pennib
-                PenNib pn = (PenNib) AbstractDungeon.player.getRelic(PenNib.ID);
-                if (pn != null) {
-                    if (pn.counter == PenNib.COUNT - 1) {
-                        cardFields.isPenAff.set(c, true);
-                        return true;
-                    }
-                }
-
             }
         }
         return false;

@@ -3,3 +3,4 @@ Pentograph glows before a boss room
 Frozen Eye preview (kio)
 PenNib and Necronomicon change the border glow of affected cards and show in the corner
 Display the amount of health at which certain bosses change their behavior
+Add a hide button the card selection screeens in combat

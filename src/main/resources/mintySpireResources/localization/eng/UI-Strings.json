@@ -3,5 +3,11 @@
     "TEXT": [
       "Display the amount of health at which certain bosses change their behavior"
     ]
+  },
+  "mintySpire:GridselectHideButton": {
+    "TEXT": [
+      "Hide",
+      "Unhide"
+    ]
   }
 }
