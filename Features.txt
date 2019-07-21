@@ -5,3 +5,4 @@ PenNib and Necronomicon change the border glow of affected cards and show in the
 Display the amount of health at which certain bosses change their behavior
 Add a hide button the card selection screens in combat
 Relics appear on top of the campfire rest option if they depend on it.
+Boss Name is displayed at the top of the dungeon map

@@ -34,6 +34,7 @@ public class MintySpire implements
         try {
             Properties defaults = new Properties();
             defaults.put("ShowHalfHealth", Boolean.toString(true));
+            defaults.put("ShowBossName", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,6 +46,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("ShowHalfHealth");
+    }
+
+    public static boolean showBN() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("ShowBossName");
     }
 
     @Override
@@ -69,6 +77,21 @@ public class MintySpire implements
                     }
                 });
         settingsPanel.addUIElement(HHBtn);
+
+        ModLabeledToggleButton BNBtn = new ModLabeledToggleButton(TEXT[1], 350, 650, Settings.CREAM_COLOR, FontHelper.charDescFont, showBN(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowBossName", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(BNBtn);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }

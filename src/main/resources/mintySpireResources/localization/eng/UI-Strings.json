@@ -1,7 +1,8 @@
 {
   "mintySpire:OptionsMenu": {
     "TEXT": [
-      "Display the amount of health at which certain bosses change their behavior"
+      "Display the amount of health at which certain bosses change their behavior",
+      "Display the name of the current boss at the top of the dungeon map"
     ]
   },
   "mintySpire:GridselectHideButton": {
