@@ -6,3 +6,5 @@ Display the amount of health at which certain bosses change their behavior
 Add a hide button the card selection screens in combat
 Relics appear on top of the campfire rest option if they depend on it.
 Boss Name is displayed at the top of the dungeon map
+Easter Egg (Kio)
+Byrds show you that you have the Philosopher's Stone
