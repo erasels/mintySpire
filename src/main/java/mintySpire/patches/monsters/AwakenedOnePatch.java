@@ -9,13 +9,14 @@ import com.megacrit.cardcrawl.random.Random;
         method = "changeState"
 )
 public class AwakenedOnePatch {
-    private static final float CHANCE = 0.15f;
+    private static final float CHANCE = 0.1f;
 
     public static void Postfix(AwakenedOne __instance, String key) {
         if (key.equals("ATTACK_1") && new Random().randomBoolean(CHANCE)) {
             try {
                 __instance.state.setAnimation(0, "dab", false);
             } catch (IllegalArgumentException ignored) {
+                __instance.state.setAnimation(0, "Attack_1", false);
             }
             __instance.state.addAnimation(0, "Idle_1", true, 0);
         }
