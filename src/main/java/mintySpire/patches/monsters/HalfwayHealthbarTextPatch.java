@@ -1,4 +1,4 @@
-package mintySpire.patches;
+package mintySpire.patches.monsters;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.AbstractCreature;
