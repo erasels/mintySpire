@@ -63,7 +63,7 @@ public class WokeByrdsPatches {
     }
 
     public static void becomeWOKE(Byrd __instance) {
-        if (!__instance.isDying && wokeFields.isWoke.get(__instance) && wokeFields.canWoke.get(__instance)) {
+        if (!__instance.isDeadOrEscaped() && wokeFields.isWoke.get(__instance) && wokeFields.canWoke.get(__instance)) {
             wokeFields.wokeTimer.set(__instance, wokeFields.wokeTimer.get(__instance)-Gdx.graphics.getDeltaTime());
             if (wokeFields.wokeTimer.get(__instance) < 0.0F) {
                 wokeFields.wokeTimer.set(__instance, 0.1F);
