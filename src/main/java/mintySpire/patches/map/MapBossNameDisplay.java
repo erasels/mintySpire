@@ -32,7 +32,7 @@ public class MapBossNameDisplay {
                         oscillatingTimer += Gdx.graphics.getDeltaTime() * 5.0F;
                     }
                     oscillatingColor.a = (0.33F + (MathUtils.cos(oscillatingTimer) + 1.0F) / 3.0F) * oscillatingFader;
-                    FontHelper.renderDeckViewTip(sb, name, Settings.HEIGHT - (100.0f * Settings.scale), oscillatingColor);
+                    FontHelper.renderDeckViewTip(sb, name, Settings.HEIGHT - (180.0f * Settings.scale), oscillatingColor);
                 }
             }
         }
