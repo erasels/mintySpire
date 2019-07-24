@@ -1,7 +1,9 @@
 package mintySpire.patches;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
@@ -23,7 +25,7 @@ public class CreatureIntagibleTransparency {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(AbstractMonster __instance, SpriteBatch sb) {
             if(hasAnyPower(__instance, IntangiblePlayerPower.POWER_ID, IntangiblePower.POWER_ID)) {
-                sb.setColor(__instance.tint.color.cpy().mul(1, 1, 1, 0.25f));
+                sb.setColor(oscillarator(__instance.tint.color));
             }
         }
 
@@ -40,7 +42,7 @@ public class CreatureIntagibleTransparency {
         @SpireInsertPatch(locator = Locator.class, localvars = {"skeleton"})
         public static void Insert(AbstractMonster __instance, SpriteBatch sb, @ByRef Skeleton[] tmp) {
             if(hasAnyPower(__instance, IntangiblePlayerPower.POWER_ID, IntangiblePower.POWER_ID)) {
-                tmp[0].setColor(__instance.tint.color.cpy().mul(1, 1, 1, 0.25f));
+                tmp[0].setColor(oscillarator(__instance.tint.color));
             }
         }
 
@@ -68,7 +70,7 @@ public class CreatureIntagibleTransparency {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(AbstractPlayer __instance, SpriteBatch sb) {
             if(__instance.hasPower(IntangiblePlayerPower.POWER_ID)) {
-                sb.setColor(Color.WHITE.cpy().mul(1, 1, 1, 0.25f));
+                sb.setColor(oscillarator(Color.WHITE));
             }
         }
 
@@ -85,7 +87,7 @@ public class CreatureIntagibleTransparency {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(AbstractPlayer __instance, SpriteBatch sb) {
             if(__instance.hasPower(IntangiblePlayerPower.POWER_ID)) {
-                sb.setColor(Color.WHITE.cpy().mul(1, 1, 1, 0.25f));
+                sb.setColor(oscillarator(Color.WHITE));
             }
         }
 
@@ -102,7 +104,7 @@ public class CreatureIntagibleTransparency {
         @SpireInsertPatch(locator = Locator.class, localvars = {"skeleton"})
         public static void Insert(AbstractPlayer __instance, SpriteBatch sb, @ByRef Skeleton[] tmp) {
             if(__instance.hasPower(IntangiblePlayerPower.POWER_ID)) {
-                tmp[0].setColor(__instance.tint.color.cpy().mul(1, 1, 1, 0.25f));
+                tmp[0].setColor(oscillarator(__instance.tint.color));
             }
         }
 
@@ -112,6 +114,19 @@ public class CreatureIntagibleTransparency {
                 return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
             }
         }
+    }
+
+    private static float oscillatingTimer = 0.0f;
+    private static float oscillatingFader = 0.0f;
+    public static Color oscillarator(Color c) {
+        oscillatingFader += Gdx.graphics.getRawDeltaTime();
+        if (oscillatingFader > 0.66F) {
+            oscillatingFader = 0.66F;
+            oscillatingTimer += Gdx.graphics.getRawDeltaTime() * 1.5f;
+        }
+        Color col = c.cpy();
+        col.a = (0.33F + (MathUtils.cos(oscillatingTimer) + 1.0F) / 3.0F) * oscillatingFader;
+        return col;
     }
 }
 
