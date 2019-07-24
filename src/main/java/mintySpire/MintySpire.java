@@ -119,7 +119,7 @@ public class MintySpire implements
     private String languageSupport() {
         switch (Settings.language) {
             case ZHS:
-                //return "zhs";
+                return "zhs";
             default:
                 return "eng";
         }
