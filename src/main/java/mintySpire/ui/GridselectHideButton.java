@@ -23,22 +23,22 @@ import java.util.ArrayList;
 public class GridselectHideButton {
     private static final int W = 512;
     private static final int H = 256;
-    private static final Color HOVER_BLEND_COLOR = new Color(1.0F, 1.0F, 1.0F, 0.3F);
-    private static final Color TEXT_DISABLED_COLOR = new Color(0.6F, 0.6F, 0.6F, 1.0F);
-    private static final float SHOW_X = Settings.WIDTH - 256.0F * Settings.scale, DRAW_Y = 28.0F * Settings.scale;
+    static final Color HOVER_BLEND_COLOR = new Color(1.0F, 1.0F, 1.0F, 0.3F);
+    static final Color TEXT_DISABLED_COLOR = new Color(0.6F, 0.6F, 0.6F, 1.0F);
+    protected static final float SHOW_X = Settings.WIDTH - 256.0F * Settings.scale, DRAW_Y = 28.0F * Settings.scale;
     private static final float HIDE_X = SHOW_X + 400.0F * Settings.scale;
-    private float current_x;
+    float current_x;
     private float target_x;
-    private boolean isHidden;
+    boolean isHidden;
     public boolean isDisabled;
     public boolean isHovered;
     public boolean isActive;
     private float glowAlpha;
-    private Color glowColor;
-    private String buttonText;
+    Color glowColor;
+    String buttonText;
 
-    private static final float TEXT_OFFSET_X = 136.0F * Settings.scale;
-    private static final float TEXT_OFFSET_Y = 57.0F * Settings.scale;
+    static final float TEXT_OFFSET_X = 136.0F * Settings.scale;
+    static final float TEXT_OFFSET_Y = 57.0F * Settings.scale;
     private static final float HITBOX_W = 300.0F * Settings.scale;
     private static final float HITBOX_H = 100.0F * Settings.scale;
 
@@ -99,7 +99,7 @@ public class GridselectHideButton {
         }
     }
 
-    private void updateGlow() {
+    protected void updateGlow() {
         this.glowAlpha += Gdx.graphics.getDeltaTime() * 3.0F;
         if (this.glowAlpha < 0.0F)
             this.glowAlpha *= -1.0F;
@@ -139,7 +139,7 @@ public class GridselectHideButton {
         hideInstantly();
     }
 
-    private void hideCards() {
+    protected void hideCards() {
         ArrayList<AbstractCard> cards = ((CardGroup) ReflectionHacks.getPrivate(AbstractDungeon.gridSelectScreen, GridCardSelectScreen.class, "targetGroup")).group;
         for (AbstractCard c : cards) {
             if(isActive) {
@@ -179,15 +179,15 @@ public class GridselectHideButton {
             this.hb.render(sb);
     }
 
-    private void renderShadow(SpriteBatch sb) {
+    void renderShadow(SpriteBatch sb) {
         sb.draw(ImageMaster.CONFIRM_BUTTON_SHADOW, this.current_x - 256.0F, DRAW_Y - 128.0F, 256.0F, 128.0F, 512.0F, 256.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 512, 256, false, false);
     }
 
-    private void renderOutline(SpriteBatch sb) {
+    void renderOutline(SpriteBatch sb) {
         sb.draw(ImageMaster.CONFIRM_BUTTON_OUTLINE, this.current_x - 256.0F, DRAW_Y - 128.0F, 256.0F, 128.0F, 512.0F, 256.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 512, 256, false, false);
     }
 
-    private void renderButton(SpriteBatch sb) {
+    void renderButton(SpriteBatch sb) {
         sb.draw(ImageMaster.CONFIRM_BUTTON, this.current_x - 256.0F, DRAW_Y - 128.0F, 256.0F, 128.0F, 512.0F, 256.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 512, 256, false, false);
     }
 }
