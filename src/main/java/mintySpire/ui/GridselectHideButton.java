@@ -68,7 +68,7 @@ public class GridselectHideButton {
     }
 
     public void update() {
-        if(!(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
+        if(AbstractDungeon.getCurrRoom() != null && !(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
             return;
         }
         if (!this.isHidden) {
@@ -151,7 +151,7 @@ public class GridselectHideButton {
     }
 
     public void render(SpriteBatch sb) {
-        if(!(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
+        if(AbstractDungeon.getCurrRoom() != null && !(AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT)) {
             return;
         }
         sb.setColor(Color.WHITE);

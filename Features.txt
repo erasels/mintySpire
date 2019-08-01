@@ -10,3 +10,4 @@ Easter Egg (Kio)
 Byrds show you that you have the Philosopher's Stone
 Removed the Ascension increment arrow on the character selection screen if the character is at its current max ascension level and change the text color to red
 Perfected Strike displays the amount of strikes you have
+FTL's border now glows yellow if its effect would trigger when played
