@@ -20,18 +20,22 @@ import java.lang.reflect.Method;
 
 public class ThiefStoleGoldDisplayPatches {
     private static final float GOLD_FONT = 32.0F;
-    public static BitmapFont goldFont;
+    private static BitmapFont goldFont;
     private static FreeTypeFontGenerator.FreeTypeFontParameter param = (FreeTypeFontGenerator.FreeTypeFontParameter) ReflectionHacks.getPrivateStatic(FontHelper.class, "param");
 
     @SpirePatch(clz = FontHelper.class, method = "initialize")
     public static class AddMyFont {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+            Color tmp = param.borderColor.cpy();
+            float tmp_w = param.borderWidth;
             param.borderColor = new Color(Color.GOLD.cpy().mul(0.45f, 0.45f, 0.45f, 0.75f));
             param.borderWidth = 2.0F * Settings.scale;
             Method method = FontHelper.class.getDeclaredMethod("prepFont", float.class, boolean.class);
             method.setAccessible(true);
             goldFont = (BitmapFont)method.invoke(null, new Object[] {GOLD_FONT, true});
+            param.borderColor = tmp.cpy();
+            param.borderWidth = tmp_w;
         }
 
         private static class Locator extends SpireInsertLocator {
