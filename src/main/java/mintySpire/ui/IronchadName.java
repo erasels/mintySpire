@@ -1,5 +1,6 @@
 package mintySpire.ui;
 
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -15,7 +16,7 @@ public class IronchadName {
     @SpirePatch(clz = Ironclad.class, method = "getTitle")
     public static class TitleChanger {
         public static SpireReturn<?> Prefix(Ironclad __instance, AbstractPlayer.PlayerClass pc) {
-            if(Settings.language == Settings.GameLanguage.ENG) {
+            if(Settings.language == Settings.GameLanguage.ENG && !Loader.isModLoaded("ironcluck")) {
                 return SpireReturn.Return("the Ironchad");
             }
             return SpireReturn.Continue();
@@ -30,7 +31,7 @@ public class IronchadName {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(FontHelper.class.getName()) && m.getMethodName().equals("renderSmartText")) {
-                        if (firstRun) {
+                        if (firstRun && !Loader.isModLoaded("ironcluck")) {
                             firstRun = false;
                             m.replace("{" +
                                     "if((name.equals(\"The Ironclad\"))) {" +
