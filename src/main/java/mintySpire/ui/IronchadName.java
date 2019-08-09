@@ -11,12 +11,13 @@ import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import mintySpire.MintySpire;
 
 public class IronchadName {
     @SpirePatch(clz = Ironclad.class, method = "getTitle")
     public static class TitleChanger {
         public static SpireReturn<?> Prefix(Ironclad __instance, AbstractPlayer.PlayerClass pc) {
-            if(Settings.language == Settings.GameLanguage.ENG && !Loader.isModLoaded("ironcluck")) {
+            if(Settings.language == Settings.GameLanguage.ENG && MintySpire.showIC() && !Loader.isModLoaded("ironcluck")) {
                 return SpireReturn.Return("the Ironchad");
             }
             return SpireReturn.Continue();
@@ -34,7 +35,7 @@ public class IronchadName {
                         if (firstRun && !Loader.isModLoaded("ironcluck")) {
                             firstRun = false;
                             m.replace("{" +
-                                    "if((name.equals(\"The Ironclad\"))) {" +
+                                    "if("+MintySpire.class.getName () + ".showIC() && name.equals(\"The Ironclad\")) {" +
                                     "$proceed($1, $2, \"The Ironchad\", $4, $5, $6, $7, $8);"  +
                                     //sb, FontHelper.bannerNameFont, this.name, this.infoX - 35.0F * Settings.scale, this.infoY + NAME_OFFSET_Y, 99999.0F, 38.0F * Settings.scale, Settings.GOLD_COLOR
                                     "} else {" +
