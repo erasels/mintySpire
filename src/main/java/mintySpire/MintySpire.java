@@ -5,6 +5,7 @@ import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -26,6 +27,14 @@ public class MintySpire implements
     private static SpireConfig modConfig = null;
     private static String modID;
     public static final Logger runLogger = LogManager.getLogger(MintySpire.class.getName());
+    public static final boolean hasStSLib;
+
+    static {
+        hasStSLib = Loader.isModLoaded("stslib");
+        if (hasStSLib) {
+            runLogger.info("Detected StSLib");
+        }
+    }
 
     public static void initialize() {
         BaseMod.subscribe(new MintySpire());

@@ -58,7 +58,6 @@ public class PantographPatches {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(Pantograph __instance) {
             __instance.stopPulse();
-
         }
 
         private static class Locator extends SpireInsertLocator {
