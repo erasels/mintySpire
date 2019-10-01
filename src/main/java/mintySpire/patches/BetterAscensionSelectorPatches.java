@@ -1,4 +1,4 @@
-package mintySpire.ui;
+package mintySpire.patches;
 
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;

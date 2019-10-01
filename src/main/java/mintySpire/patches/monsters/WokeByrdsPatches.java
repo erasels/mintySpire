@@ -7,6 +7,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.city.Byrd;
 import com.megacrit.cardcrawl.relics.PhilosopherStone;
@@ -26,9 +27,11 @@ public class WokeByrdsPatches {
     @SpirePatch(clz = Byrd.class, method = SpirePatch.CONSTRUCTOR)
     public static class WokeEyePositioner {
         public static void Postfix(Byrd __instance, float x, float y) {
-            wokeFields.isWoke.set(__instance, AbstractDungeon.player.hasRelic(PhilosopherStone.ID));
-            wokeFields.wokeSkel.set(__instance, (Skeleton) ReflectionHacks.getPrivate(__instance, AbstractCreature.class, "skeleton"));
-            wokeFields.wokePos.set(__instance, wokeFields.wokeSkel.get(__instance).findBone("eye"));
+            if(CardCrawlGame.isInARun()) {
+                wokeFields.isWoke.set(__instance, AbstractDungeon.player.hasRelic(PhilosopherStone.ID));
+                wokeFields.wokeSkel.set(__instance, (Skeleton) ReflectionHacks.getPrivate(__instance, AbstractCreature.class, "skeleton"));
+                wokeFields.wokePos.set(__instance, wokeFields.wokeSkel.get(__instance).findBone("eye"));
+            }
         }
     }
 

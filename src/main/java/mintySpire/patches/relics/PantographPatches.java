@@ -24,7 +24,7 @@ public class PantographPatches {
 
             CtMethod method = CtNewMethod.make(
                     CtClass.voidType, // Return
-                    "onEnterRoom", // Method name
+                    "justEnteredRoom", // Method name
                     new CtClass[]{ctAbstractRoom}, //Paramters
                     null, // Exceptions
                     "{" +
@@ -43,6 +43,7 @@ public class PantographPatches {
             MapRoomNode n = AbstractDungeon.getCurrMapNode();
             if (n != null) {
                 for (MapRoomNode m : AbstractDungeon.map.get(AbstractDungeon.map.size() - 1)) {
+                    //System.out.println("Node: " + n + " " + n.getRoomSymbol(true) + " NY: " + n.y + " M: " + m.y + " M|N: " + n.isConnectedTo(m));
                     if (m.y == n.y) {
                         return true;
                     }
@@ -57,7 +58,6 @@ public class PantographPatches {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(Pantograph __instance) {
             __instance.stopPulse();
-
         }
 
         private static class Locator extends SpireInsertLocator {
