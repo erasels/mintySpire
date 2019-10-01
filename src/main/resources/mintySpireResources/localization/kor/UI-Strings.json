@@ -1,0 +1,14 @@
+{
+  "mintySpire:OptionsMenu": {
+    "TEXT": [
+      "보스의 패턴이 바뀌는 체력 분기점을 표시합니다",
+      "지도의 최상단에 현재 보스를 표시합니다"
+    ]
+  },
+  "mintySpire:GridselectHideButton": {
+    "TEXT": [
+      "숨김",
+      "숨김 해제"
+    ]
+  }
+}

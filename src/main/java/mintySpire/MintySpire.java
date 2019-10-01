@@ -154,6 +154,8 @@ public class MintySpire implements
         switch (Settings.language) {
             case ZHS:
                 return "zhs";
+            case KOR:
+                return "kor";
             default:
                 return "eng";
         }
