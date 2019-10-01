@@ -5,6 +5,7 @@ import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -26,6 +27,14 @@ public class MintySpire implements
     private static SpireConfig modConfig = null;
     private static String modID;
     public static final Logger runLogger = LogManager.getLogger(MintySpire.class.getName());
+    public static final boolean hasStSLib;
+
+    static {
+        hasStSLib = Loader.isModLoaded("stslib");
+        if (hasStSLib) {
+            runLogger.info("Detected StSLib");
+        }
+    }
 
     public static void initialize() {
         BaseMod.subscribe(new MintySpire());
@@ -35,6 +44,7 @@ public class MintySpire implements
             Properties defaults = new Properties();
             defaults.put("ShowHalfHealth", Boolean.toString(true));
             defaults.put("ShowBossName", Boolean.toString(true));
+            defaults.put("Ironchad", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,6 +63,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("ShowBossName");
+    }
+
+    public static boolean showIC() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("Ironchad");
     }
 
     @Override
@@ -93,6 +110,23 @@ public class MintySpire implements
                 });
         settingsPanel.addUIElement(BNBtn);
 
+        if(Settings.language == Settings.GameLanguage.ENG) {
+            ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], 350, 600, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
+            },
+                    button ->
+                    {
+                        if (modConfig != null) {
+                            modConfig.setBool("Ironchad", button.enabled);
+                            try {
+                                modConfig.save();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+            settingsPanel.addUIElement(ICBtn);
+        }
+
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
 
@@ -119,7 +153,7 @@ public class MintySpire implements
     private String languageSupport() {
         switch (Settings.language) {
             case ZHS:
-                //return "zhs";
+                return "zhs";
             case KOR:
                 return "kor";
             default:

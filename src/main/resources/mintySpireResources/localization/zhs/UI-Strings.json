@@ -1,0 +1,15 @@
+{
+  "mintySpire:OptionsMenu": {
+    "TEXT": [
+      "显示Boss将会改变他的行动方式时的生命值",
+      "Boss的名字显示在地图画面的上方",
+      ""
+    ]
+  },
+  "mintySpire:GridselectHideButton": {
+    "TEXT": [
+      "隐藏",
+      "恢复"
+    ]
+  }
+}
