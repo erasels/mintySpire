@@ -2,7 +2,8 @@
   "mintySpire:OptionsMenu": {
     "TEXT": [
       "보스의 패턴이 바뀌는 체력 분기점을 표시합니다",
-      "지도의 최상단에 현재 보스를 표시합니다"
+      "지도의 최상단에 현재 보스를 표시합니다",
+	  "아이언클래드의 이름을 Ironchad로 표시합니다"
     ]
   },
   "mintySpire:GridselectHideButton": {
