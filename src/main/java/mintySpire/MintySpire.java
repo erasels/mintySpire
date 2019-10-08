@@ -45,6 +45,7 @@ public class MintySpire implements
             defaults.put("ShowHalfHealth", Boolean.toString(true));
             defaults.put("ShowBossName", Boolean.toString(true));
             defaults.put("Ironchad", Boolean.toString(true));
+            defaults.put("SummedDamage", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +71,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("Ironchad");
+    }
+
+    public static boolean showSD() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("SummedDamage");
     }
 
     @Override
@@ -110,7 +118,7 @@ public class MintySpire implements
                 });
         settingsPanel.addUIElement(BNBtn);
 
-        if(Settings.language == Settings.GameLanguage.ENG) {
+        if (Settings.language == Settings.GameLanguage.ENG) {
             ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], 350, 600, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
             },
                     button ->
@@ -126,6 +134,20 @@ public class MintySpire implements
                     });
             settingsPanel.addUIElement(ICBtn);
         }
+
+        ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], 350, 550, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("SummedDamage", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(SBBtn);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }

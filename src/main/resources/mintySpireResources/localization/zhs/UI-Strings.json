@@ -3,7 +3,8 @@
     "TEXT": [
       "显示Boss将会改变他的行动方式时的生命值",
       "Boss的名字显示在地图画面的上方",
-      ""
+      "",
+      "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)"
     ]
   },
   "mintySpire:GridselectHideButton": {
