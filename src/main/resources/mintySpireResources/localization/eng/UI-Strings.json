@@ -4,7 +4,8 @@
       "Display the amount of health at which certain bosses change their behavior",
       "Display the name of the current boss at the top of the dungeon map",
       "Display the Ironclad's name as Ironchad",
-      "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)"
+      "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)",
+      "Display total incoming damage if multiple monsters attack"
     ]
   },
   "mintySpire:GridselectHideButton": {
