@@ -193,7 +193,7 @@ public class MintySpire implements
     @Override
     public void receivePostRender(SpriteBatch spriteBatch) {
         if(showTID()) {
-            if (AbstractDungeon.player != null && AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
+            if (AbstractDungeon.player != null && AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.isScreenUp) {
                 if(multiIntentField == null) {
                     try {
                         multiIntentField = AbstractMonster.class.getDeclaredField("intentMultiAmt");
