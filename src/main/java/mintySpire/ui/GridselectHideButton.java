@@ -100,7 +100,7 @@ public class GridselectHideButton {
     }
 
     protected void updateGlow() {
-        this.glowAlpha += Gdx.graphics.getDeltaTime() * 3.0F;
+        this.glowAlpha += Gdx.graphics.getRawDeltaTime() * 3.0F;
         if (this.glowAlpha < 0.0F)
             this.glowAlpha *= -1.0F;
         float tmp = MathUtils.cos(this.glowAlpha);
