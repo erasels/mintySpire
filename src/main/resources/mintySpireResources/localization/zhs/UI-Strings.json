@@ -5,7 +5,7 @@
       "Boss的名字显示在地图画面的上方",
       "",
       "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)",
-      "Display total incoming damage if multiple monsters attack"
+      "多名敌人攻击时显示总伤害"
     ]
   },
   "mintySpire:GridselectHideButton": {
