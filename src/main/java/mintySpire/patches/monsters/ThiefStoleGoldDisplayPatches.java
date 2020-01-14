@@ -40,7 +40,7 @@ public class ThiefStoleGoldDisplayPatches {
 
         private static class Locator extends SpireInsertLocator {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "textAboveEnemyFont");
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "buttonLabelFont");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
