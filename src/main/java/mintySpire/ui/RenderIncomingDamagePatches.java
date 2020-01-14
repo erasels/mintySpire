@@ -56,7 +56,7 @@ public class RenderIncomingDamagePatches {
                         }
                     }
 
-                    if (c > 1 && dmg > 0) {
+                    if (c > 0 && dmg > 0) {
                         float x = AbstractDungeon.player.hb.cX;
                         float y = AbstractDungeon.player.hb.cY + AbstractDungeon.player.hb_h / 2.0f;
                         y += 10f * Settings.scale;
