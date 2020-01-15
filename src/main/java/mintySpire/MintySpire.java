@@ -45,6 +45,8 @@ public class MintySpire implements
             defaults.put("ShowHalfHealth", Boolean.toString(true));
             defaults.put("ShowBossName", Boolean.toString(true));
             defaults.put("Ironchad", Boolean.toString(true));
+            defaults.put("SummedDamage", Boolean.toString(true));
+            defaults.put("TotalIncomingDamage", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,6 +74,20 @@ public class MintySpire implements
         return modConfig.getBool("Ironchad");
     }
 
+    public static boolean showSD() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("SummedDamage");
+    }
+
+    public static boolean showTID() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("TotalIncomingDamage");
+    }
+
     @Override
     public void receivePostInitialize() {
         runLogger.info("Minty Spire is active.");
@@ -79,8 +95,9 @@ public class MintySpire implements
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(MintySpire.makeID("OptionsMenu"));
         String[] TEXT = UIStrings.TEXT;
 
+        int xPos = 350, yPos = 700;
         ModPanel settingsPanel = new ModPanel();
-        ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], 350, 700, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
+        ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
         },
                 button ->
                 {
@@ -94,8 +111,9 @@ public class MintySpire implements
                     }
                 });
         settingsPanel.addUIElement(HHBtn);
+        yPos-=50;
 
-        ModLabeledToggleButton BNBtn = new ModLabeledToggleButton(TEXT[1], 350, 650, Settings.CREAM_COLOR, FontHelper.charDescFont, showBN(), settingsPanel, l -> {
+        ModLabeledToggleButton BNBtn = new ModLabeledToggleButton(TEXT[1], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBN(), settingsPanel, l -> {
         },
                 button ->
                 {
@@ -109,9 +127,10 @@ public class MintySpire implements
                     }
                 });
         settingsPanel.addUIElement(BNBtn);
+        yPos-=50;
 
-        if(Settings.language == Settings.GameLanguage.ENG) {
-            ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], 350, 600, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
+        if (Settings.language == Settings.GameLanguage.ENG) {
+            ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
             },
                     button ->
                     {
@@ -125,7 +144,38 @@ public class MintySpire implements
                         }
                     });
             settingsPanel.addUIElement(ICBtn);
+            yPos-=50;
         }
+
+        ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("SummedDamage", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(SBBtn);
+        yPos-=50;
+
+        ModLabeledToggleButton TIDBtn = new ModLabeledToggleButton(TEXT[4], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showTID(), settingsPanel, l -> {},
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("TotalIncomingDamage", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(TIDBtn);
+        yPos-=50;
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }

@@ -26,10 +26,10 @@ public class MapBossNameDisplay {
             if (MintySpire.showBN() && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
                 String name = getBossName();
                 if (!name.isEmpty()) {
-                    oscillatingFader += Gdx.graphics.getDeltaTime();
+                    oscillatingFader += Gdx.graphics.getRawDeltaTime();
                     if (oscillatingFader > 1.0F) {
                         oscillatingFader = 1.0F;
-                        oscillatingTimer += Gdx.graphics.getDeltaTime() * 5.0F;
+                        oscillatingTimer += Gdx.graphics.getRawDeltaTime() * 5.0F;
                     }
                     oscillatingColor.a = (0.33F + (MathUtils.cos(oscillatingTimer) + 1.0F) / 3.0F) * oscillatingFader;
                     FontHelper.renderDeckViewTip(sb, name, Settings.HEIGHT - (180.0f * Settings.scale), oscillatingColor);
