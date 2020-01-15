@@ -1,6 +1,5 @@
 package mintySpire.patches.cards;
 
-import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
@@ -12,7 +11,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Necronomicon;
 import com.megacrit.cardcrawl.relics.PenNib;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -29,12 +27,12 @@ public class RelicAffectionPatch {
     private static AbstractRelic pNib = new PenNib();
     private static AbstractRelic nCon = new Necronomicon();
 
-    @SpirePatch(clz = CardGlowBorder.class, method = SpirePatch.CONSTRUCTOR)
+    @SpirePatch(clz = CardGlowBorder.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {AbstractCard.class, Color.class})
     public static class CardGlowPatch {
-        public static void Postfix(CardGlowBorder __instance, AbstractCard c) {
+        @SpirePostfixPatch
+        public static void patch(CardGlowBorder __instance, AbstractCard c, Color col, @ByRef Color[] ___color) {
             if(shouldChangeGlow(c)) {
-                Color color = Color.PURPLE.cpy();
-                ReflectionHacks.setPrivate(__instance, AbstractGameEffect.class, "color", color);
+                ___color[0] = Color.PURPLE.cpy();
             }
         }
     }
