@@ -4,15 +4,19 @@ import basemod.BaseMod;
 import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
 import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.OnStartBattleSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PreStartGameSubscriber;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,12 +26,15 @@ import java.util.Properties;
 @SpireInitializer
 public class MintySpire implements
         PostInitializeSubscriber,
-        EditStringsSubscriber {
+        EditStringsSubscriber,
+        PreStartGameSubscriber,
+        OnStartBattleSubscriber {
 
     private static SpireConfig modConfig = null;
     private static String modID;
     public static final Logger runLogger = LogManager.getLogger(MintySpire.class.getName());
     public static final boolean hasStSLib;
+    public static boolean inkHeartCompatibility;
 
     static {
         hasStSLib = Loader.isModLoaded("stslib");
@@ -213,5 +220,15 @@ public class MintySpire implements
 
     private void loadLocStrings(String language) {
         BaseMod.loadCustomStringsFile(UIStrings.class, getModID() + "Resources/localization/" + language + "/UI-Strings.json");
+    }
+
+    @Override
+    public void receivePreStartGame() {
+        inkHeartCompatibility = false;
+    }
+
+    @Override
+    public void receiveOnBattleStart(AbstractRoom abstractRoom) {
+        inkHeartCompatibility = AbstractDungeon.player.hasRelic("wanderingMiniBosses:Inkheart");
     }
 }

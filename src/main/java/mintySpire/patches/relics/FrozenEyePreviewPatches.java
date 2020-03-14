@@ -13,6 +13,8 @@ import javassist.CtBehavior;
 
 import java.lang.reflect.Field;
 
+import static mintySpire.MintySpire.inkHeartCompatibility;
+
 @SpirePatch(
         clz = DrawPilePanel.class,
         method = "render"
@@ -37,11 +39,14 @@ public class FrozenEyePreviewPatches {
                 continue;
             }
 
-            AbstractCard card = AbstractDungeon.player.drawPile.getNCardFromTop(i);
-            AbstractCard ret = renderCard(__instance, sb, card, i, 0.45f, true);
-            if (ret != null) {
-                hovered = ret;
-                hoveredIndex = i;
+            if(!(i == 0 && inkHeartCompatibility)) {
+                AbstractCard card = AbstractDungeon.player.drawPile.getNCardFromTop(i);
+                AbstractCard ret = renderCard(__instance, sb, card, i, 0.45f, true);
+
+                if (ret != null) {
+                    hovered = ret;
+                    hoveredIndex = i;
+                }
             }
         }
 
@@ -50,6 +55,7 @@ public class FrozenEyePreviewPatches {
         }
     }
 
+    private static Field frameShadowColorField = null;
     private static AbstractCard renderCard(DrawPilePanel __instance, SpriteBatch sb, AbstractCard card, int i, float scale, boolean hitbox) {
         AbstractCard hovered = null;
 
@@ -60,7 +66,7 @@ public class FrozenEyePreviewPatches {
         float prev_angle = card.angle;
 
         card.current_x = __instance.current_x + (hitbox ? 75 : 245) * Settings.scale;
-        card.current_y = __instance.current_y + (220 + (i * 27)) * Settings.scale;
+        card.current_y = __instance.current_y + (220 +(inkHeartCompatibility?250:0) + (i * 27)) * Settings.scale;
         card.drawScale = scale;
         card.angle = 0;
         card.lighten(true);
@@ -79,9 +85,11 @@ public class FrozenEyePreviewPatches {
         float prev_frameShadow_a = 0;
         if (hitbox) {
             try {
-                Field f = AbstractCard.class.getDeclaredField("frameShadowColor");
-                f.setAccessible(true);
-                frameShadowColor = (Color) f.get(card);
+                if(frameShadowColorField == null) {
+                    frameShadowColorField = AbstractCard.class.getDeclaredField("frameShadowColor");
+                    frameShadowColorField.setAccessible(true);
+                }
+                frameShadowColor = (Color) frameShadowColorField.get(card);
                 prev_frameShadow_a = frameShadowColor.a;
                 frameShadowColor.a = 0;
             } catch (IllegalAccessException | NoSuchFieldException e) {
