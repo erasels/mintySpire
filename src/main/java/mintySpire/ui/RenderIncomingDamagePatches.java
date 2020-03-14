@@ -38,42 +38,45 @@ public class RenderIncomingDamagePatches {
                         }
                     }
                     int c = 0, dmg = 0, tmp = 0;
-                    for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
-                        if (!m.isDeadOrEscaped() && isAttacking(m)) {
-                            c++;
-                            int multiAmt = 0;
-                            try {
-                                multiAmt = (int) multiIntentField.get(m);
-                            } catch (IllegalAccessException ignored) { }
-                            tmp = m.getIntentDmg();
-                            if (multiAmt > 1) {
-                                tmp *= multiAmt;
-                            }
+                    if(AbstractDungeon.getMonsters() != null) {
+                        for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
+                            if (!m.isDeadOrEscaped() && isAttacking(m)) {
+                                c++;
+                                int multiAmt = 0;
+                                try {
+                                    multiAmt = (int) multiIntentField.get(m);
+                                } catch (IllegalAccessException ignored) {
+                                }
+                                tmp = m.getIntentDmg();
+                                if (multiAmt > 1) {
+                                    tmp *= multiAmt;
+                                }
 
-                            if (tmp > 0) {
-                                dmg += tmp;
+                                if (tmp > 0) {
+                                    dmg += tmp;
+                                }
                             }
                         }
-                    }
 
-                    if (c > 0 && dmg > 0) {
-                        float x = AbstractDungeon.player.hb.cX;
-                        float y = AbstractDungeon.player.hb.cY + AbstractDungeon.player.hb_h / 2.0f;
-                        y += 10f * Settings.scale;
+                        if (c > 0 && dmg > 0) {
+                            float x = AbstractDungeon.player.hb.cX;
+                            float y = AbstractDungeon.player.hb.cY + AbstractDungeon.player.hb_h / 2.0f;
+                            y += 10f * Settings.scale;
 
-                        FontHelper.renderFontCentered(sb, FontHelper.damageNumberFont, Integer.toString(dmg), x, y, Color.SALMON, 0.5f);
-                        Texture tex = getAttackIntent(dmg);
-                        float xOffset = 70f;
-                        int l = Integer.toString(dmg).length();
-                        if(l > 2) {
-                            xOffset+= 15f * (l-2);
-                        } else if (l < 2) {
-                            xOffset -= 15f;
+                            FontHelper.renderFontCentered(sb, FontHelper.damageNumberFont, Integer.toString(dmg), x, y, Color.SALMON, 0.5f);
+                            Texture tex = getAttackIntent(dmg);
+                            float xOffset = 70f;
+                            int l = Integer.toString(dmg).length();
+                            if (l > 2) {
+                                xOffset += 15f * (l - 2);
+                            } else if (l < 2) {
+                                xOffset -= 15f;
+                            }
+                            Color backupCol = sb.getColor();
+                            sb.setColor(Color.WHITE);
+                            sb.draw(tex, x - (xOffset * Settings.scale), y - (30f * Settings.scale), tex.getWidth() / 2.0f, tex.getHeight() / 2f);
+                            sb.setColor(backupCol);
                         }
-                        Color backupCol = sb.getColor();
-                        sb.setColor(Color.WHITE);
-                        sb.draw(tex, x - (xOffset * Settings.scale), y - (30f * Settings.scale), tex.getWidth() / 2.0f, tex.getHeight() / 2f);
-                        sb.setColor(backupCol);
                     }
                 }
             }
