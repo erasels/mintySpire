@@ -136,7 +136,7 @@ public class MintySpire implements
         settingsPanel.addUIElement(BNBtn);
         yPos-=50;
 
-        if (Settings.language == Settings.GameLanguage.ENG) {
+        if (Settings.language == Settings.GameLanguage.ENG || Settings.language == Settings.GameLanguage.ZHS) {
             ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
             },
                     button ->
