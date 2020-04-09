@@ -17,8 +17,12 @@ public class IronchadName {
     @SpirePatch(clz = Ironclad.class, method = "getTitle")
     public static class TitleChanger {
         public static SpireReturn<?> Prefix(Ironclad __instance, AbstractPlayer.PlayerClass pc) {
-            if(Settings.language == Settings.GameLanguage.ENG && MintySpire.showIC() && !Loader.isModLoaded("ironcluck")) {
-                return SpireReturn.Return("the Ironchad");
+            if(MintySpire.showIC() && !Loader.isModLoaded("ironcluck")) {
+                if(Settings.language == Settings.GameLanguage.ENG) {
+                    return SpireReturn.Return("the Ironchad");
+                } else if(Settings.language == Settings.GameLanguage.ZHS) {
+                    return SpireReturn.Return("铁甲战逝");
+                }
             }
             return SpireReturn.Continue();
         }
@@ -35,12 +39,14 @@ public class IronchadName {
                         if (firstRun && !Loader.isModLoaded("ironcluck")) {
                             firstRun = false;
                             m.replace("{" +
-                                    "if("+MintySpire.class.getName () + ".showIC() && name.equals(\"The Ironclad\")) {" +
-                                    "$proceed($1, $2, \"The Ironchad\", $4, $5, $6, $7, $8);"  +
-                                    //sb, FontHelper.bannerNameFont, this.name, this.infoX - 35.0F * Settings.scale, this.infoY + NAME_OFFSET_Y, 99999.0F, 38.0F * Settings.scale, Settings.GOLD_COLOR
-                                    "} else {" +
-                                    "$proceed($$);" +
+                                    "if("+MintySpire.class.getName () + ".showIC()) {" +
+                                        "if(name.equals(\"The Ironclad\")) {" +
+                                            "$3 = \"The Ironchad\";" +
+                                        "} else if(name.equals(\"铁甲战士\")) {" +
+                                            "$3 = \"铁甲战逝\";" +
+                                        "}"  +
                                     "}" +
+                                    "$proceed($$);" +
                                     "}");
                         }
                     }
@@ -50,19 +56,3 @@ public class IronchadName {
     }
 
 }
-
-
-/*
-        @SpireInsertPatch(locator = Locator.class)
-        public static void Insert(CharacterOption __instance, SpriteBatch sb) {
-            if(__instance.name.equals("The Ironclad"))
-            FontHelper.renderSmartText(sb, FontHelper.bannerNameFont, "The Ironchad", (float)ReflectionHacks.getPrivate(__instance, CharacterOption.class, "infoX") - 35.0F * Settings.scale, (float)ReflectionHacks.getPrivate(__instance, CharacterOption.class, "infoY") + NAME_OFFSET_Y, 99999.0F, 38.0F * Settings.scale, Settings.GOLD_COLOR.cpy());
-        }
-
-        private static class Locator extends SpireInsertLocator {
-            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-                Matcher finalMatcher = new Matcher.MethodCallMatcher(SpriteBatch.class, "draw");
-                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
-            }
-        }
-    }*/
