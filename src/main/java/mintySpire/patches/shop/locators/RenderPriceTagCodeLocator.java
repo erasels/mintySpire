@@ -1,4 +1,4 @@
-package mintySpire.patches.shop;
+package mintySpire.patches.shop.locators;
 
 import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
 import com.evacipated.cardcrawl.modthespire.lib.Matcher;

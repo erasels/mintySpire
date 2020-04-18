@@ -1,42 +1,89 @@
 package mintySpire.patches.shop;
 
-import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
-import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.shop.ShopScreen;
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
+import com.megacrit.cardcrawl.shop.StorePotion;
+import com.megacrit.cardcrawl.shop.StoreRelic;
+import mintySpire.patches.shop.locators.ItemHoveredCodeLocator;
 
-@SpirePatch(
-	clz= ShopScreen.class,
-	method="update"
-)
-public class OnShopCardHoverPatch
+public class OnShopItemHoverPatch
 {
-	@SpireInsertPatch(
-		locator=CardHoverCodeLocator.class,
-		localvars = {"hoveredCard"} // Capture a card being hovered over
+	@SpirePatch(
+		clz = ShopScreen.class,
+		method = "updatePurgeCard"
 	)
-	public static void Insert(ShopScreen __instance, AbstractCard hoveredCard){
-		if(AbstractDungeon.player.gold >= hoveredCard.price){
-			// Find the unaffordable items as if we bought the hovered item
-			ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(__instance, hoveredCard, AbstractCard.class);
+	public static class OnShopPurgeCardHoverPatch
+	{
+		@SpireInsertPatch(
+			locator = ItemHoveredCodeLocator.class
+		)
+		public static void Insert(ShopScreen __instance)
+		{
+			// Get card purge cost and check if we can afford it
+			int cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "purgeCost");
+			if (AbstractDungeon.player.gold >= cardPurgeCost)
+			{
+				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(cardPurgeCost);
+			}
 		}
 	}
 
-	// Used locator class code from: https://github.com/kiooeht/ModTheSpire/wiki/SpirePatch
-	// Locates the code run when a colored or colorless card is hovered
-	private static class CardHoverCodeLocator extends SpireInsertLocator{
-		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+	@SpirePatch(
+		clz = ShopScreen.class,
+		method = "update"
+	)
+	public static class OnShopCardHoverPatch
+	{
+		@SpireInsertPatch(
+			locator = ItemHoveredCodeLocator.class,
+			localvars = {"hoveredCard"} // Capture a card being hovered over
+		)
+		public static void Insert(ShopScreen __instance, AbstractCard hoveredCard)
 		{
-			Matcher matcher = new Matcher.MethodCallMatcher(ShopScreen.class, "moveHand");
-			// Return the (two) lines that match
-			return LineFinder.findAllInOrder(ctMethodToPatch, matcher);
+			if (AbstractDungeon.player.gold >= hoveredCard.price)
+			{
+				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(hoveredCard, AbstractCard.class);
+			}
+		}
+	}
+
+	@SpirePatch(
+		clz = StoreRelic.class,
+		method = "update",
+		paramtypez = {float.class}
+	)
+	public static class OnShopRelicHoverPatch{
+		@SpireInsertPatch(
+			locator = ItemHoveredCodeLocator.class
+		)
+		public static void Insert(StoreRelic __instance)
+		{
+			if (AbstractDungeon.player.gold >= __instance.price)
+			{
+				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(__instance, StoreRelic.class);
+			}
+		}
+	}
+
+	@SpirePatch(
+		clz = StorePotion.class,
+		method = "update"
+	)
+	public static class OnShopPotionHoverPatch
+	{
+		@SpireInsertPatch(
+			locator = ItemHoveredCodeLocator.class
+		)
+		public static void Insert(StorePotion __instance)
+		{
+			if (AbstractDungeon.player.gold >= __instance.price)
+			{
+				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(__instance, StorePotion.class);
+			}
 		}
 	}
 }
