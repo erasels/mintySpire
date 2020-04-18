@@ -18,8 +18,23 @@ public class ShopItemAffordabilityPredictor
 	public static HashSet<StorePotion> futureUnaffordablePotions = new HashSet<>();
 	public static boolean canAffordFutureCardRemoval = true;
 	public static int playerGoldAfterBuying = 0;
-	
+
+	// Only called when player hovers over the purge card
+	public static void pickFutureUnaffordableItems(int cardPurgeCost)
+	{
+		pickFutureUnaffordableItems(cardPurgeCost, null, null);
+	}
+
 	public static void pickFutureUnaffordableItems(Object hoveredItem, Class<?> hoveredItemClass){
+		pickFutureUnaffordableItems(-1, hoveredItem, hoveredItemClass);
+	}
+
+	private static void pickFutureUnaffordableItems(int cardPurgeCost, Object hoveredItem, Class<?> hoveredItemClass){
+
+		if(cardPurgeCost == -1){
+			cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "purgeCost");
+		}
+
 		// Determine the class of the hovered item, and find the amount of gold left after buying it
 		if(hoveredItemClass == AbstractCard.class){
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((AbstractCard)hoveredItem).price;
@@ -27,7 +42,10 @@ public class ShopItemAffordabilityPredictor
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StoreRelic)hoveredItem).price;
 		}else if(hoveredItemClass == StorePotion.class){
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StorePotion)hoveredItem).price;
+		}else{
+			playerGoldAfterBuying = AbstractDungeon.player.gold - cardPurgeCost;
 		}
+
 		pickFutureUnaffordableItemsFromList(AbstractDungeon.shopScreen.coloredCards, AbstractCard.class, hoveredItem);
 		pickFutureUnaffordableItemsFromList(AbstractDungeon.shopScreen.colorlessCards, AbstractCard.class, hoveredItem);
 
@@ -38,9 +56,10 @@ public class ShopItemAffordabilityPredictor
 		pickFutureUnaffordableItemsFromList(storeRelics, StoreRelic.class, hoveredItem);
 		pickFutureUnaffordableItemsFromList(storePotions, StorePotion.class, hoveredItem);
 
-		// Get card purge cost and predict if we can afford it in the future
-		int cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "purgeCost");
-		canAffordFutureCardRemoval = playerGoldAfterBuying >= cardPurgeCost;
+		// Don't re-color the purge card price tag if we can afford it and are hovering over it
+		if(hoveredItem != null){
+			canAffordFutureCardRemoval = playerGoldAfterBuying >= cardPurgeCost;
+		}
 	}
 
 	private static void pickFutureUnaffordableItemsFromList(ArrayList<?> shopList, Class shopListClass, Object hoveredItem){
