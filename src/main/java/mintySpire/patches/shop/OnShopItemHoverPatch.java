@@ -3,6 +3,7 @@ package mintySpire.patches.shop;
 import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.shop.ShopScreen;
@@ -48,6 +49,16 @@ public class OnShopItemHoverPatch
 			{
 				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(hoveredCard, AbstractCard.class);
 			}
+		}
+
+		@SpirePrefixPatch
+		public static void Prefix(ShopScreen __instance){
+			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
+			ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
+			ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
+			ShopItemAffordabilityPredictor.canAffordFutureCardRemoval = true;
+
+			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
 		}
 	}
 

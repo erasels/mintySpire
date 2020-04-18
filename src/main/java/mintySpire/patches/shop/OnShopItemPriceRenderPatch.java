@@ -29,7 +29,7 @@ public class OnShopItemPriceRenderPatch
 		{
 			if (ShopItemAffordabilityPredictor.futureUnaffordableCards.contains(c))
 			{
-				color[0] = Color.SALMON.cpy();
+				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ public class OnShopItemPriceRenderPatch
 		public static void Insert(StoreRelic __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
 			if(ShopItemAffordabilityPredictor.futureUnaffordableRelics.contains(__instance)){
-				color[0] = Color.SALMON.cpy();
+				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
 	}
@@ -65,7 +65,7 @@ public class OnShopItemPriceRenderPatch
 		public static void Insert(StorePotion __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
 			if(ShopItemAffordabilityPredictor.futureUnaffordablePotions.contains(__instance)){
-				color[0] = Color.SALMON.cpy();
+				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
 	}
@@ -83,22 +83,17 @@ public class OnShopItemPriceRenderPatch
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
 			if(!ShopItemAffordabilityPredictor.canAffordFutureCardRemoval){
-				color[0] = Color.SALMON.cpy();
+				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
 	}
 
+/*
 	@SpirePatch(
 		clz=ShopScreen.class,
 		method="update"
 	)
 	public static class ResetFutureUnaffordableItemLists{
-		@SpirePrefixPatch
-		public static void Prefix(ShopScreen __instance){
-			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
-			ShopItemAffordabilityPredictor.canAffordFutureCardRemoval = true;
-		}
 	}
+*/
 }
