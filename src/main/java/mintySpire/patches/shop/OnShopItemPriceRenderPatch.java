@@ -82,7 +82,7 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if(!ShopItemAffordabilityPredictor.canAffordFutureCardRemoval){
+			if(ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval){
 				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
