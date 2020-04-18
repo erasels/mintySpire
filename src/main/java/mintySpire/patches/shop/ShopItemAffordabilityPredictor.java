@@ -1,6 +1,8 @@
 package mintySpire.patches.shop;
 
 import basemod.ReflectionHacks;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -18,6 +20,31 @@ public class ShopItemAffordabilityPredictor
 	public static HashSet<StorePotion> futureUnaffordablePotions = new HashSet<>();
 	public static boolean canAffordFutureCardRemoval = true;
 	public static int playerGoldAfterBuying = 0;
+
+	private static float hoverLerpFactor = 0;
+	private static boolean lerpFactorIncreasing = true;
+
+	public static void updateHoverLerpFactor(){
+		// 1/3 a second to change alpha from 0 to 1
+		float deltaLerpFactor = 3 * Gdx.graphics.getDeltaTime();
+		if(lerpFactorIncreasing){
+			hoverLerpFactor += deltaLerpFactor;
+			if(hoverLerpFactor > 1){
+				lerpFactorIncreasing = false;
+				hoverLerpFactor = 2 - hoverLerpFactor;
+			}
+		}else{
+			hoverLerpFactor -= deltaLerpFactor;
+			if(hoverLerpFactor < 0){
+				lerpFactorIncreasing = true;
+				hoverLerpFactor = -hoverLerpFactor;
+			}
+		}
+	}
+
+	public static Color getLerpColor(Color destColor){
+		return Color.SALMON.cpy().lerp(destColor, hoverLerpFactor);
+	}
 
 	// Only called when player hovers over the purge card
 	public static void pickFutureUnaffordableItems(int cardPurgeCost)
@@ -44,6 +71,12 @@ public class ShopItemAffordabilityPredictor
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StorePotion)hoveredItem).price;
 		}else{
 			playerGoldAfterBuying = AbstractDungeon.player.gold - cardPurgeCost;
+		}
+
+		// Set the balance to zero if price exceeded the player's gold
+		if(playerGoldAfterBuying < 0)
+		{
+			playerGoldAfterBuying = 0;
 		}
 
 		pickFutureUnaffordableItemsFromList(AbstractDungeon.shopScreen.coloredCards, AbstractCard.class, hoveredItem);
@@ -75,8 +108,8 @@ public class ShopItemAffordabilityPredictor
 			}else if(shopListClass == StorePotion.class){
 				price = ((StorePotion)item).price;
 			}
-			if(playerGoldAfterBuying < price){
-				// Save which objects to label red for later
+			// Only save items that are just now unaffordable
+			if(playerGoldAfterBuying < price && AbstractDungeon.player.gold >= price){
 				if(shopListClass == AbstractCard.class){
 					futureUnaffordableCards.add((AbstractCard) item);
 				}else if(shopListClass == StoreRelic.class){
