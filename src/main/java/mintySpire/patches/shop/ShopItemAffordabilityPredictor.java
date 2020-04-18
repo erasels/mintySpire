@@ -18,7 +18,7 @@ public class ShopItemAffordabilityPredictor
 	public static HashSet<AbstractCard> futureUnaffordableCards = new HashSet<>();
 	public static HashSet<StoreRelic> futureUnaffordableRelics = new HashSet<>();
 	public static HashSet<StorePotion> futureUnaffordablePotions = new HashSet<>();
-	public static boolean canAffordFutureCardRemoval = true;
+	public static boolean cannotAffordFutureCardRemoval = true;
 	public static int playerGoldAfterBuying = 0;
 
 	private static float hoverLerpFactor = 0;
@@ -91,7 +91,8 @@ public class ShopItemAffordabilityPredictor
 
 		// Don't re-color the purge card price tag if we can afford it and are hovering over it
 		if(hoveredItem != null){
-			canAffordFutureCardRemoval = playerGoldAfterBuying >= cardPurgeCost;
+			cannotAffordFutureCardRemoval = AbstractDungeon.player.gold >= cardPurgeCost
+				&& playerGoldAfterBuying < cardPurgeCost;
 		}
 	}
 

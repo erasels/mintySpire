@@ -56,7 +56,7 @@ public class OnShopItemHoverPatch
 			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
 			ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
 			ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
-			ShopItemAffordabilityPredictor.canAffordFutureCardRemoval = true;
+			ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
 
 			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
 		}
