@@ -3,15 +3,19 @@ package mintySpire.patches.shop;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.MembershipCard;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import org.graalvm.compiler.loop.MathUtil;
 
 public class ShopItemAffordabilityPredictor
 {
@@ -23,6 +27,8 @@ public class ShopItemAffordabilityPredictor
 
 	private static float hoverLerpFactor = 0;
 	private static boolean lerpFactorIncreasing = true;
+
+	public static boolean accountForMembershipDiscount = false;
 
 	public static void updateHoverLerpFactor(){
 		// 1/3 a second to change alpha from 0 to 1
@@ -59,13 +65,17 @@ public class ShopItemAffordabilityPredictor
 	private static void pickFutureUnaffordableItems(int cardPurgeCost, Object hoveredItem, Class<?> hoveredItemClass){
 
 		if(cardPurgeCost == -1){
-			cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "purgeCost");
+			cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "actualPurgeCost");
 		}
 
 		// Determine the class of the hovered item, and find the amount of gold left after buying it
 		if(hoveredItemClass == AbstractCard.class){
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((AbstractCard)hoveredItem).price;
 		}else if(hoveredItemClass == StoreRelic.class){
+			if(((StoreRelic)hoveredItem).relic.relicId.equals(MembershipCard.ID)){
+				accountForMembershipDiscount = true;
+				cardPurgeCost = applyMembershipDiscount(cardPurgeCost);
+			}
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StoreRelic)hoveredItem).price;
 		}else if(hoveredItemClass == StorePotion.class){
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StorePotion)hoveredItem).price;
@@ -96,6 +106,10 @@ public class ShopItemAffordabilityPredictor
 		}
 	}
 
+	private static int applyMembershipDiscount(float price){
+		return MathUtils.round(price * MembershipCard.MULTIPLIER);
+	}
+
 	private static void pickFutureUnaffordableItemsFromList(ArrayList<?> shopList, Class shopListClass, Object hoveredItem){
 		for(Object item: shopList){
 			// Ignore if this is the hovered item
@@ -109,6 +123,12 @@ public class ShopItemAffordabilityPredictor
 			}else if(shopListClass == StorePotion.class){
 				price = ((StorePotion)item).price;
 			}
+
+			// Apply membership discount to store item if necessary
+			if(accountForMembershipDiscount){
+				price = applyMembershipDiscount(price);
+			}
+
 			// Only save items that are just now unaffordable
 			if(playerGoldAfterBuying < price && AbstractDungeon.player.gold >= price){
 				if(shopListClass == AbstractCard.class){

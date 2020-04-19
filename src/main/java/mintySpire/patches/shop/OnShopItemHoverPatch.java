@@ -25,7 +25,7 @@ public class OnShopItemHoverPatch
 		public static void Insert(ShopScreen __instance)
 		{
 			// Get card purge cost and check if we can afford it
-			int cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "purgeCost");
+			int cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "actualPurgeCost");
 			if (AbstractDungeon.player.gold >= cardPurgeCost)
 			{
 				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(cardPurgeCost);
@@ -59,6 +59,7 @@ public class OnShopItemHoverPatch
 			ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
 
 			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
+			ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
 		}
 	}
 
