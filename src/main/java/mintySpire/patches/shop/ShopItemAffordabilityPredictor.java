@@ -29,6 +29,7 @@ public class ShopItemAffordabilityPredictor
 	private static boolean lerpFactorIncreasing = true;
 
 	public static boolean accountForMembershipDiscount = false;
+	public static boolean makeHandTransparent = false;
 
 	public static void updateHoverLerpFactor(){
 		// 1/3 a second to change alpha from 0 to 1
@@ -81,6 +82,15 @@ public class ShopItemAffordabilityPredictor
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StorePotion)hoveredItem).price;
 		}else{
 			playerGoldAfterBuying = AbstractDungeon.player.gold - cardPurgeCost;
+		}
+
+		// Determine hand opacity
+		if((hoveredItemClass == AbstractCard.class && ((AbstractCard) hoveredItem).color.equals(AbstractCard.CardColor.COLORLESS))
+			|| hoveredItemClass == StoreRelic.class
+			|| hoveredItemClass == StorePotion.class
+			|| hoveredItemClass == null
+		){
+			makeHandTransparent = true;
 		}
 
 		// Set the balance to zero if price exceeded the player's gold
