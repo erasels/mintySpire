@@ -51,6 +51,7 @@ public class OnShopItemHoverPatch
 			}
 		}
 
+		// TODO: move this code to the main class
 		@SpirePrefixPatch
 		public static void Prefix(ShopScreen __instance){
 			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
@@ -60,6 +61,9 @@ public class OnShopItemHoverPatch
 
 			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
 			ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
+
+			// TODO: move this variable into this class?
+			ShopItemAffordabilityPredictor.makeHandTransparent = false;
 		}
 	}
 
