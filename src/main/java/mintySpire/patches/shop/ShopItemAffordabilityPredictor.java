@@ -6,16 +6,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.MembershipCard;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
-import java.lang.reflect.Member;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-import org.graalvm.compiler.loop.MathUtil;
 
 public class ShopItemAffordabilityPredictor
 {
@@ -32,8 +29,8 @@ public class ShopItemAffordabilityPredictor
 	public static boolean makeHandTransparent = false;
 
 	public static void updateHoverLerpFactor(){
-		// 1/3 a second to change alpha from 0 to 1
-		float deltaLerpFactor = 3 * Gdx.graphics.getDeltaTime();
+		// 1/3 a second to change alpha from 0 to 1 (raw so it's not affected by SFM)
+		float deltaLerpFactor = 3 * Gdx.graphics.getRawDeltaTime();
 		if(lerpFactorIncreasing){
 			hoverLerpFactor += deltaLerpFactor;
 			if(hoverLerpFactor > 1){
