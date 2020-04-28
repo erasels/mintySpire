@@ -108,7 +108,6 @@ public class FrozenEyePreviewPatches {
         card.current_y = prev_current_y;
         card.drawScale = prev_drawScale;
         card.angle = prev_angle;
-        // TODO: undo lighten? Not sure if it's necessary
 
         return hovered;
     }
