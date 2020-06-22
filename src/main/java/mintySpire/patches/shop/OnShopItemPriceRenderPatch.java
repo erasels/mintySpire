@@ -32,69 +32,6 @@ public class OnShopItemPriceRenderPatch
 		}
 	}
 
-	// Save hand opacity to pass it from HandOpacityRenderPatch to RestoreHandOpacityPatch
-	private static float handOpacity;
-
-	@SpirePatch(
-		clz = ShopScreen.class,
-		method = "render"
-	)
-	public static class MakeHandTransparentPatch
-	{
-		@SpireInsertPatch(
-			locator = PreDrawHandCodeLocator.class,
-			localvars = {"sb"}
-		)
-		public static void Insert(ShopScreen __instance, @ByRef SpriteBatch[] sb)
-		{
-			if (MintySpire.makeHandTransparent())
-			{
-				// Save hand opacity and make hand transparent
-				handOpacity = sb[0].getColor().a;
-				sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, handOpacity / 2);
-			}
-		}
-
-		// Locate code right before the hand is being drawn
-		private static class PreDrawHandCodeLocator extends SpireInsertLocator
-		{
-			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-			{
-				Matcher matcher = new Matcher.MethodCallMatcher(ShopScreen.class, "renderPurge");
-				int[] results = LineFinder.findInOrder(ctMethodToPatch, matcher);
-				results[0]++;
-				return results;
-			}
-		}
-	}
-
-	@SpirePatch(
-		clz = ShopScreen.class,
-		method = "render"
-	)
-	public static class RestoreHandOpacityPatch
-	{
-		@SpireInsertPatch(
-			locator = PostDrawHandCodeLocator.class,
-			localvars = {"sb"}
-		)
-		public static void Insert(ShopScreen __instance, @ByRef SpriteBatch[] sb)
-		{
-			sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, handOpacity);
-		}
-
-		// Locate the code after the hand was drawn
-		private static class PostDrawHandCodeLocator extends SpireInsertLocator
-		{
-			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-			{
-				Matcher matcher = new Matcher.FieldAccessMatcher(ShopScreen.class, "speechBubble");
-				return LineFinder.findInOrder(ctMethodToPatch, matcher);
-			}
-		}
-	}
-
-
 	@SpirePatch(
 		clz = StoreRelic.class,
 		method = "render"

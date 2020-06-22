@@ -259,7 +259,7 @@ public class MintySpire implements
 					}
 				}
 			});
-		settingsPanel.addUIElement(BKRBtn);
+		settingsPanel.addUIElement(HTBtn);
 
 		// TODO: must localize strings for the last two settings
 
