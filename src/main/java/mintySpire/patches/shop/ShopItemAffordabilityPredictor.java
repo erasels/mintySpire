@@ -1,18 +1,21 @@
 package mintySpire.patches.shop;
 
 import basemod.ReflectionHacks;
+import basemod.devcommands.relic.Relic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.MembershipCard;
+import com.megacrit.cardcrawl.relics.SmilingMask;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import mintySpire.MintySpire;
 
 public class ShopItemAffordabilityPredictor
 {
@@ -26,7 +29,6 @@ public class ShopItemAffordabilityPredictor
 	private static boolean lerpFactorIncreasing = true;
 
 	public static boolean accountForMembershipDiscount = false;
-	public static boolean makeHandTransparent = false;
 
 	public static void updateHoverLerpFactor(){
 		// 1/3 a second to change alpha from 0 to 1 (raw so it's not affected by SFM)
@@ -61,6 +63,10 @@ public class ShopItemAffordabilityPredictor
 	}
 
 	private static void pickFutureUnaffordableItems(int cardPurgeCost, Object hoveredItem, Class<?> hoveredItemClass){
+		// Only pick items if the proper settings are enabled
+		if(!MintySpire.showIU()){
+			return;
+		}
 
 		if(cardPurgeCost == -1){
 			cardPurgeCost = (int) ReflectionHacks.getPrivateStatic(ShopScreen.class, "actualPurgeCost");
@@ -72,22 +78,12 @@ public class ShopItemAffordabilityPredictor
 		}else if(hoveredItemClass == StoreRelic.class){
 			if(((StoreRelic)hoveredItem).relic.relicId.equals(MembershipCard.ID)){
 				accountForMembershipDiscount = true;
-				cardPurgeCost = applyMembershipDiscount(cardPurgeCost);
 			}
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StoreRelic)hoveredItem).price;
 		}else if(hoveredItemClass == StorePotion.class){
 			playerGoldAfterBuying = AbstractDungeon.player.gold - ((StorePotion)hoveredItem).price;
 		}else{
 			playerGoldAfterBuying = AbstractDungeon.player.gold - cardPurgeCost;
-		}
-
-		// Determine hand opacity
-		if((hoveredItemClass == AbstractCard.class && ((AbstractCard) hoveredItem).color.equals(AbstractCard.CardColor.COLORLESS))
-			|| hoveredItemClass == StoreRelic.class
-			|| hoveredItemClass == StorePotion.class
-			|| hoveredItemClass == null
-		){
-			makeHandTransparent = true;
 		}
 
 		// Set the balance to zero if price exceeded the player's gold
@@ -108,6 +104,10 @@ public class ShopItemAffordabilityPredictor
 
 		// Don't re-color the purge card price tag if we can afford it and are hovering over it
 		if(hoveredItem != null){
+			// Smiling mask relic will always make the card purge cost 50 gold
+			if(!AbstractDungeon.player.hasRelic(SmilingMask.ID)){
+				cardPurgeCost = applyMembershipDiscount(cardPurgeCost);
+			}
 			cannotAffordFutureCardRemoval = AbstractDungeon.player.gold >= cardPurgeCost
 				&& playerGoldAfterBuying < cardPurgeCost;
 		}
@@ -117,7 +117,7 @@ public class ShopItemAffordabilityPredictor
 		return MathUtils.round(price * MembershipCard.MULTIPLIER);
 	}
 
-	private static void pickFutureUnaffordableItemsFromList(ArrayList<?> shopList, Class shopListClass, Object hoveredItem){
+	private static void pickFutureUnaffordableItemsFromList(ArrayList<?> shopList, Class<?> shopListClass, Object hoveredItem){
 		for(Object item: shopList){
 			// Ignore if this is the hovered item
 			if(item == hoveredItem) continue;

@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import mintySpire.MintySpire;
 import mintySpire.patches.shop.locators.ItemHoveredCodeLocator;
 
 public class OnShopItemHoverPatch
@@ -51,17 +52,22 @@ public class OnShopItemHoverPatch
 			}
 		}
 
+		// Reset all the lists and flags for our main class
 		@SpirePrefixPatch
-		public static void patch(ShopScreen __instance){
-			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
-			ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
-
-			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
-			ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
-
-			ShopItemAffordabilityPredictor.makeHandTransparent = false;
+		public static void patch(ShopScreen __instance)
+		{
+			if (MintySpire.showIU())
+			{
+				ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
+				ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
+				ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
+				ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
+				ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
+			}
+			if(MintySpire.makeHandTransparent())
+			{
+				ShopItemAffordabilityPredictor.updateHoverLerpFactor();
+			}
 		}
 	}
 

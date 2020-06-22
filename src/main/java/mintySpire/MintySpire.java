@@ -56,7 +56,8 @@ public class MintySpire implements
             defaults.put("TotalIncomingDamage", Boolean.toString(true));
             defaults.put("RemoveBaseKeywords", Boolean.toString(false));
             defaults.put("WarnItemAffordability", Boolean.toString(true));
-            modConfig = new SpireConfig("MintySpire", "Config", defaults);
+			defaults.put("MakeHandTransparent", Boolean.toString(true));
+			modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,6 +112,15 @@ public class MintySpire implements
 			return false;
 		}
 		return modConfig.getBool("WarnItemAffordability");
+	}
+
+	public static boolean makeHandTransparent()
+	{
+		if (modConfig == null)
+		{
+			return false;
+		}
+		return modConfig.getBool("MakeHandTransparent");
 	}
 
 	@Override
@@ -235,8 +245,23 @@ public class MintySpire implements
 				}
 			});
 		settingsPanel.addUIElement(WIUBtn);
+		yPos-=50;
 
-		// TODO: must localize string for this setting
+		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[7], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
+			button ->
+			{
+				if (modConfig != null) {
+					modConfig.setBool("MakeHandTransparent", button.enabled);
+					try {
+						modConfig.save();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		settingsPanel.addUIElement(BKRBtn);
+
+		// TODO: must localize strings for the last two settings
 
 		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
 		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);

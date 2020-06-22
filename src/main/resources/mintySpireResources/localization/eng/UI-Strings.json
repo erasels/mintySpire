@@ -7,7 +7,8 @@
       "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)",
       "Display total incoming damage if multiple monsters attack",
       "Remove basegame keywords when hovering cards",
-      "Show which shop items will become unaffordable when hovering over an item"
+      "Show which shop items will become unaffordable when hovering over an item",
+      "Make the hand transparent"
     ]
   },
   "mintySpire:GridselectHideButton": {
