@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import mintySpire.MintySpire;
 import mintySpire.patches.shop.locators.RenderPriceTagCodeLocator;
 
 public class OnShopItemPriceRenderPatch
@@ -26,7 +27,7 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color, AbstractCard c)
 		{
-			if (ShopItemAffordabilityPredictor.futureUnaffordableCards.contains(c))
+			if (MintySpire.showIU() && ShopItemAffordabilityPredictor.futureUnaffordableCards.contains(c))
 			{
 				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
@@ -104,7 +105,7 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(StoreRelic __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if(ShopItemAffordabilityPredictor.futureUnaffordableRelics.contains(__instance)){
+			if(MintySpire.showIU() && ShopItemAffordabilityPredictor.futureUnaffordableRelics.contains(__instance)){
 				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
@@ -122,7 +123,7 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(StorePotion __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if(ShopItemAffordabilityPredictor.futureUnaffordablePotions.contains(__instance)){
+			if(MintySpire.showIU() && ShopItemAffordabilityPredictor.futureUnaffordablePotions.contains(__instance)){
 				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
@@ -140,18 +141,10 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if (ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval)
+			if (MintySpire.showIU() && ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval)
 			{
 				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
 			}
 		}
 	}
-/*
-	@SpirePatch(
-		clz=ShopScreen.class,
-		method="update"
-	)
-	public static class ResetFutureUnaffordableItemLists{
-	}
-*/
 }

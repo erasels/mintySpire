@@ -55,6 +55,7 @@ public class MintySpire implements
             defaults.put("SummedDamage", Boolean.toString(true));
             defaults.put("TotalIncomingDamage", Boolean.toString(true));
             defaults.put("RemoveBaseKeywords", Boolean.toString(false));
+            defaults.put("WarnItemAffordability", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,7 +104,16 @@ public class MintySpire implements
         return modConfig.getBool("RemoveBaseKeywords");
     }
 
-    @Override
+	public static boolean showIU()
+	{
+		if (modConfig == null)
+		{
+			return false;
+		}
+		return modConfig.getBool("WarnItemAffordability");
+	}
+
+	@Override
     public void receivePostInitialize() {
         runLogger.info("Minty Spire is active.");
 
@@ -207,7 +217,29 @@ public class MintySpire implements
         settingsPanel.addUIElement(BKRBtn);
         yPos-=50;
 
-        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
+		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[6], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
+		},
+			button ->
+			{
+				if (modConfig != null)
+				{
+					modConfig.setBool("WarnItemAffordability", button.enabled);
+					try
+					{
+						modConfig.save();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			});
+		settingsPanel.addUIElement(WIUBtn);
+
+		// TODO: must localize string for this setting
+
+		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
+		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
 
     @Override
