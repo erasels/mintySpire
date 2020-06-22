@@ -1,16 +1,21 @@
 package mintySpire.patches.shop;
 
 import basemod.ReflectionHacks;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
 import mintySpire.MintySpire;
-import mintySpire.patches.shop.locators.ItemHoveredCodeLocator;
 
 public class OnShopItemHoverPatch
 {
@@ -64,7 +69,7 @@ public class OnShopItemHoverPatch
 				ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
 				ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
 			}
-			if(MintySpire.makeHandTransparent())
+			if (MintySpire.makeHandTransparent())
 			{
 				ShopItemAffordabilityPredictor.updateHoverLerpFactor();
 			}
@@ -76,7 +81,8 @@ public class OnShopItemHoverPatch
 		method = "update",
 		paramtypez = {float.class}
 	)
-	public static class OnShopRelicHoverPatch{
+	public static class OnShopRelicHoverPatch
+	{
 		@SpireInsertPatch(
 			locator = ItemHoveredCodeLocator.class
 		)
@@ -104,6 +110,16 @@ public class OnShopItemHoverPatch
 			{
 				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(__instance, StorePotion.class);
 			}
+		}
+	}
+
+	private static class ItemHoveredCodeLocator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher matcher = new Matcher.MethodCallMatcher(ShopScreen.class, "moveHand");
+			// Return all the lines that match in the passed method
+			return LineFinder.findAllInOrder(ctMethodToPatch, matcher);
 		}
 	}
 }
