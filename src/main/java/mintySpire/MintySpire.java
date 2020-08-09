@@ -1,8 +1,6 @@
 package mintySpire;
 
-import basemod.BaseMod;
-import basemod.ModLabeledToggleButton;
-import basemod.ModPanel;
+import basemod.*;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.OnStartBattleSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
@@ -17,6 +15,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import mintySpire.ui.ModMinMaxSlider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,6 +50,8 @@ public class MintySpire implements
             Properties defaults = new Properties();
             defaults.put("ShowHalfHealth", Boolean.toString(true));
             defaults.put("ShowBossName", Boolean.toString(true));
+            defaults.put("ShowMiniMap", Boolean.toString(false));
+            defaults.put("MiniMapIconScale", Float.toString(2.5f));
             defaults.put("Ironchad", Boolean.toString(true));
             defaults.put("SummedDamage", Boolean.toString(true));
             defaults.put("TotalIncomingDamage", Boolean.toString(true));
@@ -123,7 +124,21 @@ public class MintySpire implements
 		return modConfig.getBool("MakeHandTransparent");
 	}
 
-	@Override
+    public static boolean showMM() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("ShowMiniMap");
+    }
+
+    public static float scaleMMIcons() {
+        if (modConfig == null) {
+            return 1;
+        }
+        return modConfig.getFloat("MiniMapIconScale");
+    }
+
+    @Override
     public void receivePostInitialize() {
         runLogger.info("Minty Spire is active.");
 
@@ -162,6 +177,39 @@ public class MintySpire implements
                     }
                 });
         settingsPanel.addUIElement(BNBtn);
+        yPos-=50;
+
+        ModLabeledToggleButton MMBtn = new ModLabeledToggleButton(TEXT[6], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showMM(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowMiniMap", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(MMBtn);
+        yPos-=50;
+
+        ModLabel MMIconScaleLabel = new ModLabel(TEXT[7], xPos + 40, yPos + 8, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> {});
+        settingsPanel.addUIElement(MMIconScaleLabel);
+        float textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[7], 1f / Settings.scale);
+
+        ModMinMaxSlider MMIconScaleSlider = new ModMinMaxSlider("", xPos + 100 + textWidth, yPos + 15, 1, 4, scaleMMIcons(), "x%.2f", settingsPanel, slider -> {
+            if (modConfig != null) {
+                modConfig.setFloat("MiniMapIconScale", slider.getValue());
+                try {
+                    modConfig.save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        settingsPanel.addUIElement(MMIconScaleSlider);
         yPos-=50;
 
         if (Settings.language == Settings.GameLanguage.ENG || Settings.language == Settings.GameLanguage.ZHS) {
@@ -227,7 +275,7 @@ public class MintySpire implements
         settingsPanel.addUIElement(BKRBtn);
         yPos-=50;
 
-		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[6], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
+		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
 		},
 			button ->
 			{
@@ -247,7 +295,7 @@ public class MintySpire implements
 		settingsPanel.addUIElement(WIUBtn);
 		yPos-=50;
 
-		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[7], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
+		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[9], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
 			button ->
 			{
 				if (modConfig != null) {
