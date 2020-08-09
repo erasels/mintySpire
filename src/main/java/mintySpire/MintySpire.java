@@ -133,7 +133,7 @@ public class MintySpire implements
 
     public static float scaleMMIcons() {
         if (modConfig == null) {
-            return 1;
+            return 2.5f;
         }
         return modConfig.getFloat("MiniMapIconScale");
     }
