@@ -6,7 +6,9 @@
       "Display the Ironclad's name as Ironchad",
       "Display the summed damage of multi attacks Ex.: 3x3 -> 3x3 (9)",
       "Display total incoming damage if multiple monsters attack",
-      "Remove basegame keywords when hovering cards"
+      "Remove basegame keywords when hovering cards",
+      "Display map overview next to the dungeon map",
+      "Map overview icon scale"
     ]
   },
   "mintySpire:GridselectHideButton": {

@@ -23,7 +23,7 @@ public class MapBossNameDisplay {
     @SpirePatch(clz = DungeonMapScreen.class, method = "render")
     public static class RenderBossName {
         public static void Postfix(DungeonMapScreen __instance, SpriteBatch sb) {
-            if (MintySpire.showBN() && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
+            if (MintySpire.showBN() && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP && !MiniMapDisplay.renderingMiniMap) {
                 String name = getBossName();
                 if (!name.isEmpty()) {
                     oscillatingFader += Gdx.graphics.getRawDeltaTime();
