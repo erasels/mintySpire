@@ -34,7 +34,7 @@ public class MakeHandTransparentPatch
 			{
 				// Save hand opacity and make hand transparent
 				handOpacity = sb[0].getColor().a;
-				sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, handOpacity / 2);
+				sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, MintySpire.getHandOpacity());
 			}
 		}
 

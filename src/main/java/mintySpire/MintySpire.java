@@ -58,7 +58,9 @@ public class MintySpire implements
             defaults.put("RemoveBaseKeywords", Boolean.toString(false));
             defaults.put("WarnItemAffordability", Boolean.toString(true));
 			defaults.put("MakeHandTransparent", Boolean.toString(true));
-			modConfig = new SpireConfig("MintySpire", "Config", defaults);
+            defaults.put("HandOpacity", Float.toString(0.5f));
+
+            modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,6 +125,15 @@ public class MintySpire implements
 		}
 		return modConfig.getBool("MakeHandTransparent");
 	}
+
+    public static float getHandOpacity()
+    {
+        if (modConfig == null)
+        {
+            return 1f;
+        }
+        return modConfig.getFloat("HandOpacity");
+    }
 
     public static boolean showMM() {
         if (modConfig == null) {
@@ -308,8 +319,21 @@ public class MintySpire implements
 				}
 			});
 		settingsPanel.addUIElement(HTBtn);
+		yPos -=35;
 
-		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
+        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos+50, yPos, 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
+            if (modConfig != null) {
+                modConfig.setFloat("HandOpacity", slider.getValue());
+                try {
+                    modConfig.save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        settingsPanel.addUIElement(HandOpacitySlider);
+
+        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
 
     @Override
