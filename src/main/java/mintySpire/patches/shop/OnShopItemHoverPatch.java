@@ -57,7 +57,7 @@ public class OnShopItemHoverPatch
 			}
 		}
 
-		// Reset all the lists and flags for our main class
+		// Reset all the lists and flags for our main class, and update the opacity
 		@SpirePrefixPatch
 		public static void patch(ShopScreen __instance)
 		{
@@ -68,9 +68,7 @@ public class OnShopItemHoverPatch
 				ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
 				ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
 				ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
-			}
-			if (MintySpire.makeHandTransparent())
-			{
+
 				ShopItemAffordabilityPredictor.updateHoverLerpFactor();
 			}
 		}

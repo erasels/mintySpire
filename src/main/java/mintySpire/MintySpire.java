@@ -309,9 +309,6 @@ public class MintySpire implements
 			});
 		settingsPanel.addUIElement(HTBtn);
 
-		// TODO: must localize strings for the last two settings
-
-		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
 		BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
 
