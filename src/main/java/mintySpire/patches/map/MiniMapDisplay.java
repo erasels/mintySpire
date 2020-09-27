@@ -24,7 +24,7 @@ import javassist.expr.FieldAccess;
 import mintySpire.MintySpire;
 
 public class MiniMapDisplay {
-    private static FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
+    private static FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Settings.WIDTH, Settings.HEIGHT, false, false);
     private static OrthographicCamera camera = new OrthographicCamera(fbo.getWidth() * 4.5f, fbo.getHeight() * 4.5f);
     private static Matrix4 saveProjection = null;
     private static float saveOffsetY = 0;
