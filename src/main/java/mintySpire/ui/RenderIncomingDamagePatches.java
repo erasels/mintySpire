@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -28,7 +28,7 @@ public class RenderIncomingDamagePatches {
         @SpireInsertPatch(locator = Locator.class)
         public static void hook(AbstractDungeon __instance, SpriteBatch sb) {
             if(showTID()) {
-                if (AbstractDungeon.player != null && AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT &&  !AbstractDungeon.player.hasRelic(RunicDome.ID)) {
+                if (AbstractDungeon.player != null && AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
                     if(multiIntentField == null) {
                         try {
                             multiIntentField = AbstractMonster.class.getDeclaredField("intentMultiAmt");
@@ -40,7 +40,7 @@ public class RenderIncomingDamagePatches {
                     int c = 0, dmg = 0, tmp = 0;
                     if(AbstractDungeon.getMonsters() != null) {
                         for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
-                            if (!m.isDeadOrEscaped() && isAttacking(m)) {
+                            if (!m.isDeadOrEscaped() && isAttacking(m) && !MonsterIntentHiddenField.isIntentHidden.get(m)) {
                                 c++;
                                 int multiAmt = 0;
                                 try {
@@ -108,5 +108,37 @@ public class RenderIncomingDamagePatches {
         if (dmg < 30)
             return ImageMaster.INTENT_ATK_6;
         return ImageMaster.INTENT_ATK_7;
+    }
+
+    @SpirePatch(clz = AbstractMonster.class, method=SpirePatch.CLASS)
+    public static class MonsterIntentHiddenField {
+        public static SpireField<Boolean> isIntentHidden = new SpireField<>(() -> false);
+    }
+
+    @SpirePatch(clz = AbstractMonster.class, method = "render")
+    public static class CheckIfIntentHidden {
+        @SpireInsertPatch(locator = Locator.class)
+        public static void patchBeforeRender(AbstractMonster __instance, SpriteBatch sb) {
+            MonsterIntentHiddenField.isIntentHidden.set(__instance, true);
+        }
+
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void patchInRender(AbstractMonster __instance, SpriteBatch sb) {
+            MonsterIntentHiddenField.isIntentHidden.set(__instance, false);
+        }
+
+        private static class Locator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractPlayer.class, "hasRelic");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        private static class Locator2 extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractMonster.class, "renderIntentVfxBehind");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
     }
 }
