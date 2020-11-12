@@ -218,6 +218,21 @@ public class MintySpire implements
             yPos-=50;
         }
 
+        ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowEchoFormReminder", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(EFBtn);
+        yPos-=50;
+
         ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
                 button ->
                 {
@@ -261,21 +276,6 @@ public class MintySpire implements
                     }
                 });
         settingsPanel.addUIElement(BKRBtn);
-        yPos-=50;
-
-        ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
-                button ->
-                {
-                    if (modConfig != null) {
-                        modConfig.setBool("ShowEchoFormReminder", button.enabled);
-                        try {
-                            modConfig.save();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        settingsPanel.addUIElement(EFBtn);
         yPos-=50;
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
