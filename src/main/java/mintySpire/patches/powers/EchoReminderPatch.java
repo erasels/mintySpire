@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.powers.EchoPower;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import mintySpire.MintySpire;
 
 @SpirePatch(clz = AbstractCard.class, method = "renderEnergy")
 
@@ -21,7 +22,7 @@ public class EchoReminderPatch {
     private static TextureAtlas.AtlasRegion doubleRegion = new TextureAtlas.AtlasRegion(doubleTexture, 0, 0, doubleTexture.getWidth(), doubleTexture.getHeight());
 
     public static void Postfix(AbstractCard __instance, SpriteBatch sb){
-            if(AbstractDungeon.player != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.player.drawPile.contains(__instance) && (AbstractDungeon.player.hasPower(EchoPower.POWER_ID)) &&
+            if(MintySpire.showEFR() && AbstractDungeon.player != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.player.drawPile.contains(__instance) && (AbstractDungeon.player.hasPower(EchoPower.POWER_ID)) &&
                     (!__instance.purgeOnUse && AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount > 0 && AbstractDungeon.actionManager.cardsPlayedThisTurn.size() - (int)ReflectionHacks.getPrivate(AbstractDungeon.player.getPower(EchoPower.POWER_ID), EchoPower.class, "cardsDoubledThisTurn") < AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount)){
             renderHelper(sb, doubleRegion, __instance.current_x, __instance.current_y, __instance);
         }
