@@ -1,15 +1,21 @@
 package mintySpire.patches.shop;
 
 import basemod.ReflectionHacks;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
-import mintySpire.patches.shop.locators.ItemHoveredCodeLocator;
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
+import mintySpire.MintySpire;
 
 public class OnShopItemHoverPatch
 {
@@ -51,17 +57,20 @@ public class OnShopItemHoverPatch
 			}
 		}
 
+		// Reset all the lists and flags for our main class, and update the opacity
 		@SpirePrefixPatch
-		public static void patch(ShopScreen __instance){
-			ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
-			ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
-			ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
+		public static void patch(ShopScreen __instance)
+		{
+			if (MintySpire.showIU())
+			{
+				ShopItemAffordabilityPredictor.futureUnaffordablePotions.clear();
+				ShopItemAffordabilityPredictor.futureUnaffordableRelics.clear();
+				ShopItemAffordabilityPredictor.futureUnaffordableCards.clear();
+				ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval = false;
+				ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
 
-			ShopItemAffordabilityPredictor.updateHoverLerpFactor();
-			ShopItemAffordabilityPredictor.accountForMembershipDiscount = false;
-
-			ShopItemAffordabilityPredictor.makeHandTransparent = false;
+				ShopItemAffordabilityPredictor.updateHoverLerpFactor();
+			}
 		}
 	}
 
@@ -70,7 +79,8 @@ public class OnShopItemHoverPatch
 		method = "update",
 		paramtypez = {float.class}
 	)
-	public static class OnShopRelicHoverPatch{
+	public static class OnShopRelicHoverPatch
+	{
 		@SpireInsertPatch(
 			locator = ItemHoveredCodeLocator.class
 		)
@@ -98,6 +108,16 @@ public class OnShopItemHoverPatch
 			{
 				ShopItemAffordabilityPredictor.pickFutureUnaffordableItems(__instance, StorePotion.class);
 			}
+		}
+	}
+
+	private static class ItemHoveredCodeLocator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher matcher = new Matcher.MethodCallMatcher(ShopScreen.class, "moveHand");
+			// Return all the lines that match in the passed method
+			return LineFinder.findAllInOrder(ctMethodToPatch, matcher);
 		}
 	}
 }

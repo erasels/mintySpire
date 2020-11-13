@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import java.util.HashSet;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
-import mintySpire.patches.shop.locators.RenderPriceTagCodeLocator;
+import mintySpire.MintySpire;
 
 public class OnShopItemPriceRenderPatch
 {
@@ -26,69 +28,9 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color, AbstractCard c)
 		{
-			if (ShopItemAffordabilityPredictor.futureUnaffordableCards.contains(c))
-			{
-				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
-			}
+			updatePriceColors(c, color, ShopItemAffordabilityPredictor.futureUnaffordableCards);
 		}
 	}
-
-	// Save hand opacity to pass it from HandOpacityRenderPatch to RestoreHandOpacityPatch
-	private static float handOpacity;
-
-	@SpirePatch(
-		clz = ShopScreen.class,
-		method = "render"
-	)
-	public static class HandOpacityRenderPatch{
-		@SpireInsertPatch(
-			locator = PreDrawHandCodeLocator.class,
-			localvars = {"sb"}
-		)
-		public static void Insert(ShopScreen __instance, @ByRef SpriteBatch[] sb){
-			handOpacity = -1;
-			if(ShopItemAffordabilityPredictor.makeHandTransparent){
-				// Save hand opacity and make hand transparent
-				handOpacity = sb[0].getColor().a;
-				sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, handOpacity/2);
-			}
-		}
-
-		private static class PreDrawHandCodeLocator extends SpireInsertLocator
-		{
-			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-			{
-				Matcher matcher = new Matcher.MethodCallMatcher(ShopScreen.class, "renderPurge");
-				int[] results = LineFinder.findInOrder(ctMethodToPatch, matcher);
-				results[0]++;
-				return results;
-			}
-		}
-	}
-
-	@SpirePatch(
-		clz = ShopScreen.class,
-		method = "render"
-	)
-	public static class RestoreHandOpacityPatch{
-		@SpireInsertPatch(
-			locator = PostDrawHandCodeLocator.class,
-			localvars = {"sb"}
-		)
-		public static void Insert(ShopScreen __instance, @ByRef SpriteBatch[] sb){
-			sb[0].setColor(sb[0].getColor().r, sb[0].getColor().g, sb[0].getColor().b, handOpacity);
-		}
-
-		private static class PostDrawHandCodeLocator extends SpireInsertLocator
-		{
-			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-			{
-				Matcher matcher = new Matcher.FieldAccessMatcher(ShopScreen.class, "speechBubble");
-				return LineFinder.findInOrder(ctMethodToPatch, matcher);
-			}
-		}
-	}
-
 
 	@SpirePatch(
 		clz = StoreRelic.class,
@@ -96,17 +38,13 @@ public class OnShopItemPriceRenderPatch
 	)
 	public static class OnShopRelicPriceRenderPatch
 	{
-		private static float savedHandOpacity;
-
 		@SpireInsertPatch(
 			locator = RenderPriceTagCodeLocator.class,
 			localvars = {"color"}
 		)
 		public static void Insert(StoreRelic __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if(ShopItemAffordabilityPredictor.futureUnaffordableRelics.contains(__instance)){
-				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
-			}
+			updatePriceColors(__instance, color, ShopItemAffordabilityPredictor.futureUnaffordableRelics);
 		}
 	}
 
@@ -122,9 +60,7 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(StorePotion __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if(ShopItemAffordabilityPredictor.futureUnaffordablePotions.contains(__instance)){
-				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
-			}
+			updatePriceColors(__instance, color, ShopItemAffordabilityPredictor.futureUnaffordablePotions);
 		}
 	}
 
@@ -140,18 +76,28 @@ public class OnShopItemPriceRenderPatch
 		)
 		public static void Insert(ShopScreen __instance, SpriteBatch sb, @ByRef Color[] color)
 		{
-			if (ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval)
-			{
-				color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
-			}
+			updatePriceColors(null, color, null);
 		}
 	}
-/*
-	@SpirePatch(
-		clz=ShopScreen.class,
-		method="update"
-	)
-	public static class ResetFutureUnaffordableItemLists{
+
+	private static void updatePriceColors(Object item, Color[] color, HashSet<?> futureUnaffordableItems)
+	{
+		// We are updating the card purge price tag and we can still afford it, no reason to update the color
+		if(futureUnaffordableItems == null && !ShopItemAffordabilityPredictor.cannotAffordFutureCardRemoval){
+			return;
+		}
+		if (MintySpire.showIU() && (futureUnaffordableItems == null || futureUnaffordableItems.contains(item)))
+		{
+			color[0] = ShopItemAffordabilityPredictor.getLerpColor(color[0]);
+		}
 	}
-*/
+
+	private static class RenderPriceTagCodeLocator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher matcher = new Matcher.MethodCallMatcher(FontHelper.class, "renderFontLeftTopAligned");
+			return LineFinder.findAllInOrder(ctMethodToPatch, matcher);
+		}
+	}
 }

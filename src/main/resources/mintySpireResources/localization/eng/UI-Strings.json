@@ -8,7 +8,9 @@
       "Display total incoming damage if multiple monsters attack",
       "Remove basegame keywords when hovering cards",
       "Display map overview next to the dungeon map",
-      "Map overview icon scale"
+      "Map overview icon scale",
+      "Show which shop items will become unaffordable when hovering over an item",
+      "Make the hand transparent"
     ]
   },
   "mintySpire:GridselectHideButton": {
