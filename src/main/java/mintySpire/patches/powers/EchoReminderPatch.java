@@ -19,13 +19,16 @@ import mintySpire.MintySpire;
 
 public class EchoReminderPatch {
 
+    //Since MintySpire doesn't use TextureLoader I'll instantiate the texture this way
     private static Texture doubleTexture = new Texture(Gdx.files.internal("images/powers/echoFormReminder/double_card.png"));
     private static TextureAtlas.AtlasRegion doubleRegion = new TextureAtlas.AtlasRegion(doubleTexture, 0, 0, doubleTexture.getWidth(), doubleTexture.getHeight());
 
+    //TODO Work out an elegant way for the glow text to be slightly larger than the original, while maintaining the same origin
     public static void Postfix(AbstractCard __instance, SpriteBatch sb){
         if(echoFormValidChecker(__instance)) {
             sb.setColor(Color.WHITE);
             renderHelper(sb, doubleRegion, __instance.current_x, __instance.current_y, __instance);
+            //glow effect implementation taken from GK's SpicyShops
             sb.setBlendFunction(770, 1);
             sb.setColor(new Color(1.0F, 1.0F, 1.0F, (MathUtils.cosDeg((float) (System.currentTimeMillis() / 5L % 360L)) + 1.25F) / 3.0F));
             renderHelper(sb, doubleRegion, __instance.current_x, __instance.current_y, __instance);
@@ -34,17 +37,20 @@ public class EchoReminderPatch {
         }
     }
 
+    //code to render an image on top of all relevant cards taken from Jedi's Ranger
     private static void renderHelper(SpriteBatch sb, TextureAtlas.AtlasRegion img, float drawX, float drawY, AbstractCard C){
         sb.draw(img, drawX + img.offsetX - (float) img.originalWidth / 2.0F, drawY + img.offsetY - (float) img.originalHeight / 2.0F, (float) img.originalWidth / 2.0F - img.offsetX, (float) img.originalHeight / 2.0F - img.offsetY, (float) img.packedWidth, (float) img.packedHeight, C.drawScale * Settings.scale, C.drawScale * Settings.scale, C.angle);
     }
 
+
+    //Overly complicated validation method to check when to draw the double card effect
     private static boolean echoFormValidChecker(AbstractCard __instance){
         return (MintySpire.showEFR() &&
                 AbstractDungeon.player != null &&
-                AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT &&
-                !AbstractDungeon.player.drawPile.contains(__instance) &&
+                AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && //This should stop the DoubleImage from rendering if the player has Echo stacks remaining in the card selection screen
+                !AbstractDungeon.player.drawPile.contains(__instance) && //Prevents rendering when examining the DrawPile
                 (AbstractDungeon.player.hasPower(EchoPower.POWER_ID)) &&
-                !__instance.purgeOnUse && AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount > 0 &&
+                !__instance.purgeOnUse && AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount > 0 && //The following set of conditionals essentially replicates the same behaviour as EchoPower uses to check if your next card should be doubled. 
                 AbstractDungeon.actionManager.cardsPlayedThisTurn.size() - (int)ReflectionHacks.getPrivate(AbstractDungeon.player.getPower(EchoPower.POWER_ID), EchoPower.class, "cardsDoubledThisTurn") < AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount);
     }
 
