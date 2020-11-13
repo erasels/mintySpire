@@ -57,6 +57,9 @@ public class MintySpire implements
             defaults.put("TotalIncomingDamage", Boolean.toString(true));
             defaults.put("RemoveBaseKeywords", Boolean.toString(false));
             defaults.put("ShowEchoFormReminder", Boolean.toString(true));
+            defaults.put("WarnItemAffordability", Boolean.toString(true));
+			      defaults.put("MakeHandTransparent", Boolean.toString(true));
+            defaults.put("HandOpacity", Float.toString(0.5f));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,6 +106,33 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("RemoveBaseKeywords");
+    }
+
+	public static boolean showIU()
+	{
+		if (modConfig == null)
+		{
+			return false;
+		}
+		return modConfig.getBool("WarnItemAffordability");
+	}
+
+	public static boolean makeHandTransparent()
+	{
+		if (modConfig == null)
+		{
+			return false;
+		}
+		return modConfig.getBool("MakeHandTransparent");
+	}
+
+    public static float getHandOpacity()
+    {
+        if (modConfig == null)
+        {
+            return 1f;
+        }
+        return modConfig.getFloat("HandOpacity");
     }
 
     public static boolean showMM() {
@@ -277,6 +307,53 @@ public class MintySpire implements
                 });
         settingsPanel.addUIElement(BKRBtn);
         yPos-=50;
+
+		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[9], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
+		},
+			button ->
+			{
+				if (modConfig != null)
+				{
+					modConfig.setBool("WarnItemAffordability", button.enabled);
+					try
+					{
+						modConfig.save();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			});
+		settingsPanel.addUIElement(WIUBtn);
+		yPos-=50;
+
+		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[10], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
+			button ->
+			{
+				if (modConfig != null) {
+					modConfig.setBool("MakeHandTransparent", button.enabled);
+					try {
+						modConfig.save();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		settingsPanel.addUIElement(HTBtn);
+		yPos -=35;
+
+        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos+50, yPos, 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
+            if (modConfig != null) {
+                modConfig.setFloat("HandOpacity", slider.getValue());
+                try {
+                    modConfig.save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        settingsPanel.addUIElement(HandOpacitySlider);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
