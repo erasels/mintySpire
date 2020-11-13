@@ -56,10 +56,10 @@ public class MintySpire implements
             defaults.put("SummedDamage", Boolean.toString(true));
             defaults.put("TotalIncomingDamage", Boolean.toString(true));
             defaults.put("RemoveBaseKeywords", Boolean.toString(false));
+            defaults.put("ShowEchoFormReminder", Boolean.toString(true));
             defaults.put("WarnItemAffordability", Boolean.toString(true));
-			defaults.put("MakeHandTransparent", Boolean.toString(true));
+			      defaults.put("MakeHandTransparent", Boolean.toString(true));
             defaults.put("HandOpacity", Float.toString(0.5f));
-
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,6 +147,13 @@ public class MintySpire implements
             return 2.5f;
         }
         return modConfig.getFloat("MiniMapIconScale");
+    }
+
+    public static boolean showEFR(){
+        if (modConfig == null) {
+            return false;
+        }
+        return  modConfig.getBool("ShowEchoFormReminder");
     }
 
     @Override
@@ -241,6 +248,21 @@ public class MintySpire implements
             yPos-=50;
         }
 
+        ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowEchoFormReminder", button.enabled);
+                        try {
+                            modConfig.save();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        settingsPanel.addUIElement(EFBtn);
+        yPos-=50;
+
         ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {},
                 button ->
                 {
@@ -286,7 +308,7 @@ public class MintySpire implements
         settingsPanel.addUIElement(BKRBtn);
         yPos-=50;
 
-		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
+		ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[9], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
 		},
 			button ->
 			{
@@ -306,7 +328,7 @@ public class MintySpire implements
 		settingsPanel.addUIElement(WIUBtn);
 		yPos-=50;
 
-		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[9], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
+		ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[10], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {},
 			button ->
 			{
 				if (modConfig != null) {
@@ -335,6 +357,8 @@ public class MintySpire implements
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
     }
+
+
 
     @Override
     public void receiveEditStrings() {
