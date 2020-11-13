@@ -48,11 +48,14 @@ public class EchoReminderPatch {
         return (MintySpire.showEFR() &&
                 AbstractDungeon.player != null &&
                 AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && //This should stop the DoubleImage from rendering if the player has Echo stacks remaining in the card selection screen
-     //           (!AbstractDungeon.player.drawPile.contains(__instance) &&  //Prevents rendering when examining the DrawPile
-     //           !AbstractDungeon.player.discardPile.contains(__instance) && //Similarly for the discard pile
                 AbstractDungeon.player.hand.contains(__instance) &&
-     //           !AbstractDungeon.cardRewardScreen.rewardGroup.contains(__instance) &&
-                !__instance.purgeOnUse && AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount > 0 && //The following set of conditionals essentially replicates the same behaviour as EchoPower uses to check if your next card should be doubled.
+                //switch it back to these conditionals if there are cards that play EchoFormable cards from non-hand zones... besides Omniscience
+                //!AbstractDungeon.cardRewardScreen.rewardGroup.contains(__instance) &&
+                //!AbstractDungeon.player.drawPile.contains(__instance) &&
+                //!AbstractDungeon.player.discardPile.contains(__instance) &&
+                !__instance.purgeOnUse &&
+                AbstractDungeon.player.hasPower(EchoPower.POWER_ID) &&
+                AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount > 0 && //The following set of conditionals essentially replicates the same behaviour as EchoPower uses to check if your next card should be doubled.
                 AbstractDungeon.actionManager.cardsPlayedThisTurn.size() - (int)ReflectionHacks.getPrivate(AbstractDungeon.player.getPower(EchoPower.POWER_ID), EchoPower.class, "cardsDoubledThisTurn") < AbstractDungeon.player.getPower(EchoPower.POWER_ID).amount);
     }
 
