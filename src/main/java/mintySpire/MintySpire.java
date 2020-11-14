@@ -163,7 +163,7 @@ public class MintySpire implements
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(MintySpire.makeID("OptionsMenu"));
         String[] TEXT = UIStrings.TEXT;
 
-        int xPos = 350, yPos = 700;
+        int xPos = 350, yPos = 750;
         ModPanel settingsPanel = new ModPanel();
         ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
         },
@@ -341,9 +341,9 @@ public class MintySpire implements
 				}
 			});
 		settingsPanel.addUIElement(HTBtn);
-		yPos -=35;
+        textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[10], 1f / Settings.scale);
 
-        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos+50, yPos, 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
+        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos + 100 + textWidth, yPos + 15, 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
             if (modConfig != null) {
                 modConfig.setFloat("HandOpacity", slider.getValue());
                 try {
