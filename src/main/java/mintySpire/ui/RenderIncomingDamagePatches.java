@@ -60,21 +60,20 @@ public class RenderIncomingDamagePatches {
 
                         if (c > 0 && dmg > 0) {
                             float x = AbstractDungeon.player.hb.cX;
-                            float y = AbstractDungeon.player.hb.cY + AbstractDungeon.player.hb_h / 2.0f;
+                            float y = AbstractDungeon.player.hb.y + AbstractDungeon.player.hb_h;
                             y += 10f * Settings.scale;
 
                             FontHelper.renderFontCentered(sb, FontHelper.damageNumberFont, Integer.toString(dmg), x, y, Color.SALMON, 0.5f);
                             Texture tex = getAttackIntent(dmg);
-                            float xOffset = 70f;
-                            int l = Integer.toString(dmg).length();
-                            if (l > 2) {
-                                xOffset += 15f * (l - 2);
-                            } else if (l < 2) {
-                                xOffset -= 15f;
-                            }
+
                             Color backupCol = sb.getColor();
                             sb.setColor(Color.WHITE);
-                            sb.draw(tex, x - (xOffset * Settings.scale), y - (30f * Settings.scale), tex.getWidth() / 2.0f, tex.getHeight() / 2f);
+                            float width = tex.getWidth() / 2.0f;
+                            sb.draw(tex,
+                                    x - FontHelper.getSmartWidth(FontHelper.damageNumberFont, Integer.toString(dmg), 9999.0F, 0.0F, 0.5f) - (width/2f),
+                                    y - (width/2f),
+                                    width,
+                                    tex.getHeight() / 2f);
                             sb.setColor(backupCol);
                         }
                     }
