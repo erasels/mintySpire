@@ -45,7 +45,13 @@ public class BetterAscensionSelectorPatches {
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(SpriteBatch.class.getName()) && m.getMethodName().equals("draw")) {
                         counter1++;
-                        if (counter1 == 4) {
+                        if (counter1 == 5) {
+                            m.replace("{" +
+                                    "if(!" + BetterAscensionSelectorPatches.class.getName() + ".isAtMinAsc(this)) {" +
+                                    "$proceed($$);" +
+                                    "}" +
+                                    "}");
+                        } else if (counter1 == 6) {
                             m.replace("{" +
                                     "if(!" + BetterAscensionSelectorPatches.class.getName() + ".isAtMaxAsc(this)) {" +
                                     "$proceed($$);" +
@@ -74,8 +80,17 @@ public class BetterAscensionSelectorPatches {
     public static boolean isAtMaxAsc(CharacterSelectScreen cSS) {
         for (CharacterOption o : cSS.options) {
             if (o.selected) {
-                int maxAsc = (int) ReflectionHacks.getPrivate(o, CharacterOption.class, "maxAscensionLevel");
+                int maxAsc = ReflectionHacks.getPrivate(o, CharacterOption.class, "maxAscensionLevel");
                 return cSS.ascensionLevel >= maxAsc;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAtMinAsc(CharacterSelectScreen cSS) {
+        for (CharacterOption o : cSS.options) {
+            if (o.selected) {
+                return cSS.ascensionLevel == 1;
             }
         }
         return false;
