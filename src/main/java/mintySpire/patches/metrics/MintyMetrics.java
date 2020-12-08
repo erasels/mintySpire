@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import mintySpire.MintySpire;
 
 public class MintyMetrics extends Metrics {
-    public static String url = "mintymetrics.atwebpages.com";
+    public static String url = "http://mintymetrics.atwebpages.com";
 
     @SpireOverride
     private void sendPost(String url, final String fileToDelete) {
