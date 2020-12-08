@@ -12,10 +12,10 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <SlayTheSpire.version>14-01-2020</SlayTheSpire.version>
+        <SlayTheSpire.version>11-29-2020</SlayTheSpire.version>
         <ModTheSpire.version>3.15.0</ModTheSpire.version>
         <!--CHANGE THIS TO YOUR STEAM INSTALLATION-->
-	<Steam.path>K:/Steam/steamapps</Steam.path>
+        <Steam.path>K:/Steam/steamapps</Steam.path>
     </properties>
 
     <dependencies>
