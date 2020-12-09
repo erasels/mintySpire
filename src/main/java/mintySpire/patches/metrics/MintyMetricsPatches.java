@@ -49,7 +49,7 @@ public class MintyMetricsPatches {
     public static class RunMintyMetricsOnDefeat {
         @SpirePostfixPatch
         public static void patch(DeathScreen __insatnce, MonsterGroup m) {
-            if (Settings.UPLOAD_DATA && (AbstractDungeon.actNum > 2 || AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() != null && (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss || AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite))) {
+            if (Settings.UPLOAD_DATA && (AbstractDungeon.actNum > 1 || AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() != null && (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss || AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite))) {
                 Metrics metrics = new MintyMetrics();
                 metrics.setValues(true, false, m, Metrics.MetricRequestType.UPLOAD_METRICS);
                 Thread t = new Thread(metrics);
