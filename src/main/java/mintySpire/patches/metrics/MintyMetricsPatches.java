@@ -3,8 +3,11 @@ package mintySpire.patches.metrics;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.metrics.Metrics;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
+import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
 import com.megacrit.cardcrawl.screens.DeathScreen;
 import com.megacrit.cardcrawl.screens.VictoryScreen;
 import javassist.CannotCompileException;
@@ -26,8 +29,8 @@ public class MintyMetricsPatches {
     public static class RunMintyMetricsOnVictory {
         @SpireInsertPatch(locator = Locator.class)
         public static void patch(VictoryScreen __instance) {
-            Metrics metrics = new MintyMetrics();
             if (Settings.UPLOAD_DATA) {
+                Metrics metrics = new MintyMetrics();
                 metrics.setValues(false, true, null, Metrics.MetricRequestType.UPLOAD_METRICS);
                 Thread t = new Thread(metrics);
                 t.start();
@@ -46,8 +49,8 @@ public class MintyMetricsPatches {
     public static class RunMintyMetricsOnDefeat {
         @SpirePostfixPatch
         public static void patch(DeathScreen __insatnce, MonsterGroup m) {
-            Metrics metrics = new MintyMetrics();
-            if (Settings.UPLOAD_DATA) {
+            if (Settings.UPLOAD_DATA && (AbstractDungeon.actNum > 2 || AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() != null && (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss || AbstractDungeon.getCurrRoom() instanceof MonsterRoomElite))) {
+                Metrics metrics = new MintyMetrics();
                 metrics.setValues(true, false, m, Metrics.MetricRequestType.UPLOAD_METRICS);
                 Thread t = new Thread(metrics);
                 t.start();
@@ -59,8 +62,8 @@ public class MintyMetricsPatches {
     public static class RunMintyMetricsOnDefeatButVictoryActually {
         @SpireInsertPatch(locator = RunMintyMetricsOnVictory.Locator.class)
         public static void patch(DeathScreen __instance) {
-            Metrics metrics = new MintyMetrics();
             if (Settings.UPLOAD_DATA) {
+                Metrics metrics = new MintyMetrics();
                 metrics.setValues(false, false, null, Metrics.MetricRequestType.UPLOAD_METRICS);
                 Thread t = new Thread(metrics);
                 t.start();
