@@ -5,8 +5,16 @@ import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireOverride;
 import com.evacipated.cardcrawl.modthespire.lib.SpireSuper;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.PotionHelper;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.metrics.Metrics;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.potions.FirePotion;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import mintySpire.MintySpire;
 
 import java.util.ArrayList;
@@ -53,6 +61,33 @@ public class MintyMetrics extends Metrics {
 
         //Add Ids of acts visited this run
         addData("acts_visited", acts);
+
+        //Polish up items_purchased with prefix denoting their type
+        ArrayList<String> purchases = (ArrayList<String>) data.get("items_purchased");
+        ArrayList<String> types = new ArrayList<>();
+        for(String s : purchases) {
+            AbstractCard c = CardLibrary.getCard(s);
+            if(c != null) {
+                types.add("Card");
+                continue;
+            }
+
+            AbstractRelic r = RelicLibrary.getRelic(s);
+            if(r != null && !(r instanceof Circlet)) {
+                types.add("Relic");
+                continue;
+            }
+
+            AbstractPotion p = PotionHelper.getPotion(s);
+            //Weird check because trying to get a potion that doesn't exist returns a fire potion
+            if(!(p instanceof FirePotion) || s.equals(FirePotion.POTION_ID)) {
+                types.add("Potion");
+                continue;
+            }
+
+            types.add("Undefined");
+        }
+        addData("items_purchased_type", types);
     }
 
     @SpireOverride
