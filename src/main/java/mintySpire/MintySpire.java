@@ -1,6 +1,10 @@
 package mintySpire;
 
-import basemod.*;
+import basemod.BaseMod;
+import basemod.ModLabel;
+import basemod.ModLabeledToggleButton;
+import basemod.ModPanel;
+import basemod.abstracts.CustomSavable;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.OnStartBattleSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
@@ -15,11 +19,13 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import mintySpire.patches.metrics.MintyMetrics;
 import mintySpire.ui.ModMinMaxSlider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 @SpireInitializer
@@ -356,6 +362,22 @@ public class MintySpire implements
         settingsPanel.addUIElement(HandOpacitySlider);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
+
+        BaseMod.addSaveField("MintyMetricActs", new CustomSavable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> onSave() {
+                return MintyMetrics.acts;
+            }
+
+            @Override
+            public void onLoad(ArrayList<String> i) {
+                if(i == null) {
+                    MintyMetrics.acts = new ArrayList<>();
+                } else {
+                    MintyMetrics.acts = i;
+                }
+            }
+        });
     }
 
 
