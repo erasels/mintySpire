@@ -85,9 +85,10 @@ public class TinyChestPatches {
         if(TCLoc > -1 && TCLoc < AbstractDungeon.player.relics.size() && AbstractDungeon.player.relics.get(TCLoc).relicId.equals(id)) {
             return AbstractDungeon.player.relics.get(TCLoc);
         } else {
-            for(AbstractRelic r : AbstractDungeon.player.relics) {
+            for(int i = 0; i < AbstractDungeon.player.relics.size() ; i++) {
+                AbstractRelic r = AbstractDungeon.player.relics.get(i);
                 if(r.relicId.equals(id)) {
-                    TCLoc = AbstractDungeon.player.relics.indexOf(r);
+                    TCLoc = i;
                     return r;
                 }
             }
