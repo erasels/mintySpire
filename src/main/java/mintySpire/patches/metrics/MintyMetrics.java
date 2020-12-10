@@ -12,6 +12,8 @@ import mintySpire.MintySpire;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.megacrit.cardcrawl.helpers.TipTracker.pref;
+
 public class MintyMetrics extends Metrics {
     public static String url = "http://mintymetrics.atwebpages.com";
 
@@ -30,6 +32,16 @@ public class MintyMetrics extends Metrics {
         data.remove("is_prod");
         data.remove("seed_source_timestamp");
         data.remove("neow_cost");
+        data.remove("special_seed");
+
+        //Fix win_rate field
+        int numVictory = pref.getInteger("WIN_COUNT", 0);
+        int numDeath = pref.getInteger("LOSE_COUNT", 0);
+        if (numVictory <= 0) {
+            addData("win_rate", 0.0F);
+        } else {
+            addData("win_rate", (float)numVictory / (float)(numDeath + numVictory));
+        }
 
         //Add modlist to toplevel
         ArrayList<String> modsinfos = new ArrayList<>();
@@ -37,8 +49,10 @@ public class MintyMetrics extends Metrics {
             modsinfos.add(m.Name);
         }
         modsinfos.sort(String::compareTo);
-        data.put("mods", modsinfos);
-        data.put("acts_visited", acts);
+        addData("mods", modsinfos);
+
+        //Add Ids of acts visited this run
+        addData("acts_visited", acts);
     }
 
     @SpireOverride
