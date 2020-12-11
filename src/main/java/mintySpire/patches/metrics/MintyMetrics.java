@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.potions.FirePotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
 import mintySpire.MintySpire;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,10 @@ public class MintyMetrics extends Metrics {
         ArrayList<String> purchases = (ArrayList<String>) data.get("items_purchased");
         ArrayList<String> types = new ArrayList<>();
         for(String s : purchases) {
+            int loc = s.lastIndexOf("+");
+            if(loc != -1 && StringUtils.isNumeric(s.substring(loc+1))) {
+                s = s.substring(0, loc);
+            }
             AbstractCard c = CardLibrary.getCard(s);
             if(c != null) {
                 types.add("Card");
