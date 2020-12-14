@@ -1,7 +1,8 @@
 {
   "modid": "mintyspire",
   "name": "Minty Spire (QoL Compilation)",
-  "author_list": ["erasels", "kiooeht"],
+  "author_list": ["erasels"],
+  "credits": "Contributors: kiooeht, Mmagicala, NotInTheFace \nTranslators: (ZHS) Rita-B, (KOR) GyeRak, Celicath",
   "description": "${project.description}",
   "version": "${project.version}",
   "sts_version": "${SlayTheSpire.version}",
