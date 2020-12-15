@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import javassist.CtBehavior;
+import mintySpire.MintySpire;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,11 @@ public class CardRewardOriginalCardsPatches {
                 localvars = {"retVal"}
         )
         public static void SaveUnupgradedRewardCards(ArrayList<AbstractCard> retVal) {
-            ArrayList<AbstractCard> copiedList = new ArrayList<>();
-            retVal.forEach(c -> copiedList.add(c.makeCopy()));
-            CardFields.SCVPopup.unupgradedCardRewards.set(CardCrawlGame.cardPopup, copiedList);
+            if(MintySpire.showBCUP()) {
+                ArrayList<AbstractCard> copiedList = new ArrayList<>();
+                retVal.forEach(c -> copiedList.add(c.makeCopy()));
+                CardFields.SCVPopup.unupgradedCardRewards.set(CardCrawlGame.cardPopup, copiedList);
+            }
         }
 
         private static class SaveUnupgradedRewardCardsLocator extends SpireInsertLocator {
@@ -46,9 +49,11 @@ public class CardRewardOriginalCardsPatches {
                 localvars = {"retVal"}
         )
         public static void SaveUnupgradedColorlessRewardCards(ArrayList<AbstractCard> retVal) {
-            ArrayList<AbstractCard> copiedList = new ArrayList<>();
-            retVal.forEach(c -> copiedList.add(c.makeCopy()));
-            CardFields.SCVPopup.unupgradedCardRewards.set(CardCrawlGame.cardPopup, copiedList);
+            if(MintySpire.showBCUP()) {
+                ArrayList<AbstractCard> copiedList = new ArrayList<>();
+                retVal.forEach(c -> copiedList.add(c.makeCopy()));
+                CardFields.SCVPopup.unupgradedCardRewards.set(CardCrawlGame.cardPopup, copiedList);
+            }
         }
     }
 }

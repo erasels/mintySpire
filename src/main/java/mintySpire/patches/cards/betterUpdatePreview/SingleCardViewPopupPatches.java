@@ -4,6 +4,7 @@ import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import mintySpire.MintySpire;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class SingleCardViewPopupPatches {
     )
     public static class OpenSingleCardPatch {
         public static void Postfix(SingleCardViewPopup _instance, AbstractCard card) {
-            if (card.upgraded) {
+            if (MintySpire.showBCUP() && card.upgraded) {
                 SingleCardViewPopup.isViewingUpgrade = true;
                 ArrayList<AbstractCard> unupgradedCards = CardFields.SCVPopup.unupgradedCardRewards.get(_instance);
                 if (unupgradedCards != null) {

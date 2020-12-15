@@ -9,6 +9,7 @@ import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
+import mintySpire.MintySpire;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +26,12 @@ public class SetTextFieldsPatches {
     public static class AbstractCardInitializeDescriptionPatch {
         @SpirePostfixPatch
         public static void defaultAndUpgradedText(AbstractCard _instance) {
-            if (_instance.upgraded) {
-                CardFields.AbCard.upgradedText.set(_instance, _instance.rawDescription);
-            } else {
-                CardFields.AbCard.defaultText.set(_instance, _instance.rawDescription);
+            if(MintySpire.showBCUP()) {
+                if (_instance.upgraded) {
+                    CardFields.AbCard.upgradedText.set(_instance, _instance.rawDescription);
+                } else {
+                    CardFields.AbCard.defaultText.set(_instance, _instance.rawDescription);
+                }
             }
         }
     }
@@ -40,15 +43,17 @@ public class SetTextFieldsPatches {
     public static class AbstractCardDisplayUpgradesPatch {
         @SpirePrefixPatch
         public static void diffText(AbstractCard _instance) {
-            String defaultText = CardFields.AbCard.defaultText.get(_instance);
-            String upgradedText = CardFields.AbCard.upgradedText.get(_instance);
-            if ("".equals(CardFields.AbCard.diffText.get(_instance)) && !defaultText.equals(upgradedText) && !"".equals(upgradedText)) {
-                String diffText = calculateTextDiff(defaultText, upgradedText, _instance);
-                CardFields.AbCard.diffText.set(_instance, diffText);
-            }
-            if (!"".equals(CardFields.AbCard.diffText.get(_instance))) {
-                _instance.rawDescription = CardFields.AbCard.diffText.get(_instance);
-                _instance.initializeDescription();
+            if(MintySpire.showBCUP()) {
+                String defaultText = CardFields.AbCard.defaultText.get(_instance);
+                String upgradedText = CardFields.AbCard.upgradedText.get(_instance);
+                if ("".equals(CardFields.AbCard.diffText.get(_instance)) && !defaultText.equals(upgradedText) && !"".equals(upgradedText)) {
+                    String diffText = calculateTextDiff(defaultText, upgradedText, _instance);
+                    CardFields.AbCard.diffText.set(_instance, diffText);
+                }
+                if (!"".equals(CardFields.AbCard.diffText.get(_instance))) {
+                    _instance.rawDescription = CardFields.AbCard.diffText.get(_instance);
+                    _instance.initializeDescription();
+                }
             }
         }
     }

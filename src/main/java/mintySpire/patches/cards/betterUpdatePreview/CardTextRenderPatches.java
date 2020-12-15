@@ -43,14 +43,16 @@ public class CardTextRenderPatches {
                 localvars = {"gl", "word"}
         )
         public static void Insert(AbstractCard _instance, @ByRef GlyphLayout[] gl, String word) {
-            if (word.length() > 0 && word.charAt(0) == '[') {
-                if (word.equals("[DiffAddS]") ||
-                        word.equals("[DiffAddE]") ||
-                        word.equals("[DiffRmvS]") ||
-                        word.equals("[DiffRmvE]")
-                ) {
-                    gl[0].setText(FontHelper.cardDescFont_N, "");
-                    gl[0].width = 0;
+            if(MintySpire.showBCUP()) {
+                if (word.length() > 0 && word.charAt(0) == '[') {
+                    if (word.equals("[DiffAddS]") ||
+                            word.equals("[DiffAddE]") ||
+                            word.equals("[DiffRmvS]") ||
+                            word.equals("[DiffRmvE]")
+                    ) {
+                        gl[0].setText(FontHelper.cardDescFont_N, "");
+                        gl[0].width = 0;
+                    }
                 }
             }
         }
@@ -94,21 +96,7 @@ public class CardTextRenderPatches {
                 localvars = {"tmp"}
         )
         public static void Insert(AbstractCard _instance, SpriteBatch sb, @ByRef String[] tmp) {
-            if (tmp[0].length() > 0 && tmp[0].charAt(0) == '[') {
-                if (tmp[0].equals("[DiffAddS] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffAdd.set(_instance, true);
-                } else if (tmp[0].equals("[DiffAddE] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffAdd.set(_instance, false);
-                } else if (tmp[0].equals("[DiffRmvS] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffRmv.set(_instance, true);
-                } else if (tmp[0].equals("[DiffRmvE] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffRmv.set(_instance, false);
-                }
-            }
+            captureTags(_instance, tmp);
         }
 
         @SpireInsertPatch(
@@ -191,9 +179,12 @@ public class CardTextRenderPatches {
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(FontHelper.class.getName()) &&
                             m.getMethodName().equals("renderRotatedText")) {
-                        m.replace("{ $10 = " +
-                                CardTextRenderPatches.class.getName() +
-                                ".GetColorSCVP(this); $_ = $proceed($$); }");
+                        m.replace("{" +
+                                "if( " + MintySpire.class.getName() + ".showBCUP() ) { " +
+                                "$10 = " + CardTextRenderPatches.class.getName() + ".GetColorSCVP(this); " +
+                                "}" +
+                                "$_ = $proceed($$); " +
+                                "}");
                     }
                 }
             };
@@ -236,21 +227,7 @@ public class CardTextRenderPatches {
         )
         public static void Insert(SingleCardViewPopup _instance, SpriteBatch sb, @ByRef String[] tmp) {
             AbstractCard card = ReflectionHacks.getPrivate(_instance, SingleCardViewPopup.class, "card");
-            if (tmp[0].length() > 0 && tmp[0].charAt(0) == '[') {
-                if (tmp[0].equals("[DiffAddS] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffAdd.set(card, true);
-                } else if (tmp[0].equals("[DiffAddE] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffAdd.set(card, false);
-                } else if (tmp[0].equals("[DiffRmvS] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffRmv.set(card, true);
-                } else if (tmp[0].equals("[DiffRmvE] ")) {
-                    tmp[0] = "";
-                    CardFields.AbCard.isInDiffRmv.set(card, false);
-                }
-            }
+            captureTags(card, tmp);
         }
     }
 
@@ -272,4 +249,23 @@ public class CardTextRenderPatches {
         }
     }
 
+    private static void captureTags(AbstractCard _instance, @ByRef String[] tmp) {
+        if(MintySpire.showBCUP()) {
+            if (tmp[0].length() > 0 && tmp[0].charAt(0) == '[') {
+                if (tmp[0].equals("[DiffAddS] ")) {
+                    tmp[0] = "";
+                    CardFields.AbCard.isInDiffAdd.set(_instance, true);
+                } else if (tmp[0].equals("[DiffAddE] ")) {
+                    tmp[0] = "";
+                    CardFields.AbCard.isInDiffAdd.set(_instance, false);
+                } else if (tmp[0].equals("[DiffRmvS] ")) {
+                    tmp[0] = "";
+                    CardFields.AbCard.isInDiffRmv.set(_instance, true);
+                } else if (tmp[0].equals("[DiffRmvE] ")) {
+                    tmp[0] = "";
+                    CardFields.AbCard.isInDiffRmv.set(_instance, false);
+                }
+            }
+        }
+    }
 }
