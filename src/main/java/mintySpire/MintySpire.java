@@ -19,13 +19,13 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import mintySpire.patches.metrics.MintyMetrics;
-import mintySpire.ui.ModMinMaxSlider;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -173,46 +173,17 @@ public class MintySpire implements
         return modConfig.getBool("ShowUpdatePreview");
     }
 
-    /*public static Color getBCUPAddColor() {
-        if (modConfig == null) {
-            return addColor;
-        }
-
-        String colString = modConfig.getString("UpdatePreviewAddColor");
-        return Color.valueOf(colString);
-    }
-
-    public static Color getBCUPRemoveColor() {
-        if (modConfig == null) {
-            return removeColor;
-        }
-
-        String colString = modConfig.getString("UpdatePreviewRemoveColor");
-        return Color.valueOf(colString);
-    }*/
-
+    private float xPos = 350f, yPos = 750f, orgYPos = 750f;
+    private ModPanel settingsPanel;
+    private int curPage = 1;
     @Override
     public void receivePostInitialize() {
-        runLogger.info("Minty Spire is active.");
-
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(MintySpire.makeID("OptionsMenu"));
         String[] TEXT = UIStrings.TEXT;
         addColor = Color.valueOf(modConfig.getString("UpdatePreviewAddColor"));
         removeColor = Color.valueOf(modConfig.getString("UpdatePreviewRemoveColor"));
 
-        int xPos = 350, yPos = 750;
-        ModPanel settingsPanel = new ModPanel();
-        ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
-        },
-                button ->
-                {
-                    if (modConfig != null) {
-                        modConfig.setBool("ShowHalfHealth", button.enabled);
-                        saveConfig();
-                    }
-                });
-        settingsPanel.addUIElement(HHBtn);
-        yPos -= 50;
+        settingsPanel = new ModPanel();
 
         ModLabeledToggleButton BNBtn = new ModLabeledToggleButton(TEXT[1], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBN(), settingsPanel, l -> {
         },
@@ -223,8 +194,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(BNBtn);
-        yPos -= 50;
+        registerUIElement(BNBtn, true);
 
         ModLabeledToggleButton MMBtn = new ModLabeledToggleButton(TEXT[6], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showMM(), settingsPanel, l -> {
         },
@@ -235,12 +205,10 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(MMBtn);
-        yPos -= 50;
+        registerUIElement(MMBtn, true);
 
-        ModLabel MMIconScaleLabel = new ModLabel(TEXT[7], xPos + 40, yPos + 8, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> {
-        });
-        settingsPanel.addUIElement(MMIconScaleLabel);
+        ModLabel MMIconScaleLabel = new ModLabel(TEXT[7], xPos + 40, yPos + 8, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> { });
+        registerUIElement(MMIconScaleLabel, false);
         float textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[7], 1f / Settings.scale);
 
         ModMinMaxSlider MMIconScaleSlider = new ModMinMaxSlider("", xPos + 100 + textWidth, yPos + 15, 1, 4, scaleMMIcons(), "x%.2f", settingsPanel, slider -> {
@@ -249,46 +217,7 @@ public class MintySpire implements
                 saveConfig();
             }
         });
-        settingsPanel.addUIElement(MMIconScaleSlider);
-        yPos -= 50;
-
-        if (Settings.language == Settings.GameLanguage.ENG || Settings.language == Settings.GameLanguage.ZHS) {
-            ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
-            },
-                    button ->
-                    {
-                        if (modConfig != null) {
-                            modConfig.setBool("Ironchad", button.enabled);
-                            saveConfig();
-                        }
-                    });
-            settingsPanel.addUIElement(ICBtn);
-            yPos -= 50;
-        }
-
-        ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
-        },
-                button ->
-                {
-                    if (modConfig != null) {
-                        modConfig.setBool("ShowEchoFormReminder", button.enabled);
-                        saveConfig();
-                    }
-                });
-        settingsPanel.addUIElement(EFBtn);
-        yPos -= 50;
-
-        ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
-        },
-                button ->
-                {
-                    if (modConfig != null) {
-                        modConfig.setBool("SummedDamage", button.enabled);
-                        saveConfig();
-                    }
-                });
-        settingsPanel.addUIElement(SBBtn);
-        yPos -= 50;
+        registerUIElement(MMIconScaleSlider, true);
 
         ModLabeledToggleButton TIDBtn = new ModLabeledToggleButton(TEXT[4], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showTID(), settingsPanel, l -> {
         },
@@ -299,8 +228,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(TIDBtn);
-        yPos -= 50;
+        registerUIElement(TIDBtn, true);
 
         ModLabeledToggleButton BKRBtn = new ModLabeledToggleButton(TEXT[5], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBKR(), settingsPanel, l -> {
         },
@@ -311,8 +239,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(BKRBtn);
-        yPos -= 50;
+        registerUIElement(BKRBtn, true);
 
         ModLabeledToggleButton WIUBtn = new ModLabeledToggleButton(TEXT[9], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIU(), settingsPanel, l -> {
         },
@@ -323,8 +250,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(WIUBtn);
-        yPos -= 50;
+        registerUIElement(WIUBtn, true);
 
         ModLabeledToggleButton HTBtn = new ModLabeledToggleButton(TEXT[10], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, makeHandTransparent(), settingsPanel, l -> {
         },
@@ -335,7 +261,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(HTBtn);
+        registerUIElement(HTBtn, false);
         textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[10], 1f / Settings.scale);
 
         ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos + (100f * Settings.scale) + textWidth, yPos + (15f * Settings.scale), 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
@@ -344,8 +270,7 @@ public class MintySpire implements
                 saveConfig();
             }
         });
-        settingsPanel.addUIElement(HandOpacitySlider);
-        yPos -= 50f;
+        registerUIElement(HandOpacitySlider, true);
 
         //Better Card Upgrade Preview
         ModLabeledToggleButton BCUPBtn = new ModLabeledToggleButton(TEXT[11], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBCUP(), settingsPanel, l -> {
@@ -357,8 +282,7 @@ public class MintySpire implements
                         saveConfig();
                     }
                 });
-        settingsPanel.addUIElement(BCUPBtn);
-        yPos -= 50;
+        registerUIElement(BCUPBtn, true);
 
         Texture colorButton = new Texture(getModID() + "Resources/img/colorButton.png");
         Texture colorButtonOutline = new Texture(getModID() + "Resources/img/colorButtonOutline.png");
@@ -390,7 +314,6 @@ public class MintySpire implements
         };
 
         float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F));
-        settingsPanel.addUIElement(new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { })));
 
         List<Color> removeColors = new ArrayList<>();
         removeColors.add(new Color(0xFF6563FF));
@@ -414,11 +337,10 @@ public class MintySpire implements
                 modColorDisplay.bOutline = Color.DARK_GRAY.b;
             }
             removeColorButtons.add(modColorDisplay);
-            settingsPanel.addUIElement(modColorDisplay);
+            registerUIElement(modColorDisplay, false);
         }
-        yPos -= 50f;
-
-        settingsPanel.addUIElement(new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { })));
+        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
+        registerUIElement(addColorLabel, true);
 
         List<Color> addColors = new ArrayList<>();
         addColors.add(new Color(0x7FFF00FF));
@@ -442,11 +364,69 @@ public class MintySpire implements
                 modColorDisplay.bOutline = Color.DARK_GRAY.b;
             }
             addColorButtons.add(modColorDisplay);
-            settingsPanel.addUIElement(modColorDisplay);
+            registerUIElement(modColorDisplay, false);
         }
-        yPos -= 50f;
+        ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
+        registerUIElement(removeColorLabel, true);
 
-        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels, kiooeht", "TODO", settingsPanel);
+        ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowEchoFormReminder", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(EFBtn, true);
+
+        ModLabeledToggleButton HHBtn = new ModLabeledToggleButton(TEXT[0], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showHH(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("ShowHalfHealth", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(HHBtn, true);
+
+        ModLabeledToggleButton SBBtn = new ModLabeledToggleButton(TEXT[3], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("SummedDamage", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(SBBtn, true);
+
+        if (Settings.language == Settings.GameLanguage.ENG || Settings.language == Settings.GameLanguage.ZHS) {
+            ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
+            },
+                    button ->
+                    {
+                        if (modConfig != null) {
+                            modConfig.setBool("Ironchad", button.enabled);
+                            saveConfig();
+                        }
+                    });
+            registerUIElement(ICBtn, true);
+        }
+
+        ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f * Settings.scale, orgYPos + 45f * Settings.scale, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
+                button ->
+                {
+                    if(pages.containsKey(curPage+1)) {
+                        changePage(curPage+1);
+                    } else {
+                        changePage(1);
+                    }
+                });
+        settingsPanel.addUIElement(FlipPageBtn);
+
+        BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels", "", settingsPanel);
 
         BaseMod.addSaveField("MintyMetricActs", new CustomSavable<ArrayList<String>>() {
             @Override
@@ -465,6 +445,39 @@ public class MintySpire implements
         });
     }
 
+    private final float pageOffset = 12000f;
+    private HashMap<Integer, ArrayList<IUIElement>> pages = new HashMap<Integer, ArrayList<IUIElement>>() {{put(1, new ArrayList<>());}};
+    private float elementSpace = 50f;
+    private float yThreshold = yPos - elementSpace * 12;
+    private void registerUIElement(IUIElement elem, boolean decrement) {
+        settingsPanel.addUIElement(elem);
+
+        int page = pages.size() + (yThreshold == yPos? 1 : 0);
+        if(!pages.containsKey(page)) {
+            pages.put(page, new ArrayList<>());
+            yPos = orgYPos;
+            elem.moveY(yPos);
+        }
+        if(page > curPage) {
+            elem.moveX(elem.getX() + pageOffset);
+        }
+        pages.get(page).add(elem);
+
+        if(decrement) {
+            yPos -= elementSpace;
+        }
+    }
+
+    private void changePage(int i) {
+        for(IUIElement e : pages.get(curPage)) {
+            e.moveX(e.getX() + pageOffset);
+        }
+
+        for(IUIElement e : pages.get(i)) {
+            e.moveX(e.getX() - pageOffset);
+        }
+        curPage = i;
+    }
 
     @Override
     public void receiveEditStrings() {

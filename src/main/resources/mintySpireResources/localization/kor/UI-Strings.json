@@ -13,8 +13,9 @@
       "Show which shop items will become unaffordable when hovering over an item",
       "Make the Merchant's hand transparent",
       "Display the better card update preview",
-      "Color of added card upgrade text:",
-      "Color of removed card upgrade text:"
+      "Highlight new text when previewing card upgrades:",
+      "Highlight removed text when previewing card upgrades:",
+      "Next Page"
     ]
   },
   "mintySpire:GridselectHideButton": {
