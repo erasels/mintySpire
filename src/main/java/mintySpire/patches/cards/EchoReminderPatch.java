@@ -49,7 +49,7 @@ public class EchoReminderPatch {
 
     //Overly complicated validation method to check when to draw the double card effect
     private static boolean echoFormValidChecker(AbstractCard __instance) {
-        if (MintySpire.showEFR() && AbstractDungeon.player != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) { //This should stop the DoubleImage from rendering if the player has Echo stacks remaining in the card selection screen
+        if (MintySpire.showEFR() && AbstractDungeon.player != null &&AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) { //This should stop the DoubleImage from rendering if the player has Echo stacks remaining in the card selection screen
             AbstractPower p = AbstractDungeon.player.getPower(EchoForm.ID);
             if (p != null) {
                 int amt = p.amount;
