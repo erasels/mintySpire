@@ -20,6 +20,7 @@ public class ModMinMaxSlider implements IUIElement {
     private Consumer<ModMinMaxSlider> change;
     private Hitbox hb;
     private Hitbox bgHb;
+    private float x;
     private float sliderX;
     private float handleX;
     private float y;
@@ -50,8 +51,9 @@ public class ModMinMaxSlider implements IUIElement {
         } else {
             posX *= Settings.scale;
         }
-        sliderX = posX - 11.0f * Settings.scale;
-        handleX = posX + SLIDE_W;
+        x = posX;
+        sliderX = x - 11.0f * Settings.scale;
+        handleX = x + SLIDE_W;
         y = posY * Settings.scale;
 
         hb = new Hitbox(42.0f * Settings.scale, 38.0f * Settings.scale);
@@ -153,5 +155,36 @@ public class ModMinMaxSlider implements IUIElement {
     @Override
     public int updateOrder() {
         return ModPanel.DEFAULT_UPDATE;
+    }
+
+    @Override
+    public void move(float xPos, float yPos) {
+        xPos *= Settings.scale;
+        handleX = handleX + (xPos - x);
+        x = xPos;
+        sliderX = x - 11.0f * Settings.scale;
+        y = yPos * Settings.scale;
+
+        bgHb.move(sliderX + SLIDE_W / 2.0f, y);
+    }
+
+    @Override
+    public void moveX(float xPos) {
+        move(xPos, y/=Settings.scale);
+    }
+
+    @Override
+    public void moveY(float yPos) {
+        move(x, yPos);
+    }
+
+    @Override
+    public float getX() {
+        return x;
+    }
+
+    @Override
+    public float getY() {
+        return y;
     }
 }
