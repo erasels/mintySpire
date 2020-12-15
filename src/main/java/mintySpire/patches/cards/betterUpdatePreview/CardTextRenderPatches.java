@@ -125,7 +125,9 @@ public class CardTextRenderPatches {
                                          float draw_y,
                                          float spacing) {
             if (CardFields.AbCard.isInDiffRmv.get(_instance)) {
+                gl.setText(font, tmp.trim());
                 float w = gl.width;
+                gl.setText(font, tmp);
                 Color original = sb.getColor();
                 sb.setColor(MintySpire.removeColor);
                 sb.draw(strikethrough,
@@ -213,7 +215,9 @@ public class CardTextRenderPatches {
                                          GlyphLayout gl,
                                          float draw_y) {
             if (CardFields.AbCard.isInDiffRmv.get(___card)) {
+                gl.setText(font, tmp.trim());
                 float w = gl.width;
+                gl.setText(font, tmp);
                 Color original = sb.getColor();
                 sb.setColor(MintySpire.removeColor);
                 sb.draw(strikethrough,
