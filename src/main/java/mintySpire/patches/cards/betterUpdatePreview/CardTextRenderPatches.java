@@ -137,34 +137,37 @@ public class CardTextRenderPatches {
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(FontHelper.class.getName()) &&
                             m.getMethodName().equals("renderRotatedText")) {
-                        m.replace("{ $10 = " +
-                                CardTextRenderPatches.class.getName() +
-                                ".GetColor(this); $_ = $proceed($$); }");
+                        m.replace("{ " +
+                                "$10 = " + CardTextRenderPatches.class.getName() + ".GetColor(this, $10); " +
+                                "$_ = $proceed($$); " +
+                                "}");
                     }
                 }
             };
         }
     }
 
-    public static Color GetColor(AbstractCard _instance) {
-        if (CardFields.AbCard.isInDiffAdd.get(_instance)) {
-            return MintySpire.addColor;
-        } else if (CardFields.AbCard.isInDiffRmv.get(_instance)) {
-            return MintySpire.removeColor;
-        } else {
-            return ReflectionHacks.getPrivate(_instance, AbstractCard.class, "textColor");
+    public static Color GetColor(AbstractCard _instance, Color originalCol) {
+        if(MintySpire.showBCUP()) {
+            if (CardFields.AbCard.isInDiffAdd.get(_instance)) {
+                return MintySpire.addColor;
+            } else if (CardFields.AbCard.isInDiffRmv.get(_instance)) {
+                return MintySpire.removeColor;
+            }
         }
+        return originalCol;
     }
 
-    public static Color GetColorSCVP(SingleCardViewPopup _instance) {
-        AbstractCard card = ReflectionHacks.getPrivate(_instance, SingleCardViewPopup.class, "card");
-        if (CardFields.AbCard.isInDiffAdd.get(card)) {
-            return MintySpire.addColor;
-        } else if (CardFields.AbCard.isInDiffRmv.get(card)) {
-            return MintySpire.removeColor;
-        } else {
-            return Settings.CREAM_COLOR;
+    public static Color GetColorSCVP(SingleCardViewPopup _instance, Color originalCol) {
+        if(MintySpire.showBCUP()) {
+            AbstractCard card = ReflectionHacks.getPrivate(_instance, SingleCardViewPopup.class, "card");
+            if (CardFields.AbCard.isInDiffAdd.get(card)) {
+                return MintySpire.addColor;
+            } else if (CardFields.AbCard.isInDiffRmv.get(card)) {
+                return MintySpire.removeColor;
+            }
         }
+        return originalCol;
     }
 
     @SpirePatch(
@@ -181,7 +184,7 @@ public class CardTextRenderPatches {
                             m.getMethodName().equals("renderRotatedText")) {
                         m.replace("{" +
                                 "if( " + MintySpire.class.getName() + ".showBCUP() ) { " +
-                                "$10 = " + CardTextRenderPatches.class.getName() + ".GetColorSCVP(this); " +
+                                "$10 = " + CardTextRenderPatches.class.getName() + ".GetColorSCVP(this, $10); " +
                                 "}" +
                                 "$_ = $proceed($$); " +
                                 "}");
