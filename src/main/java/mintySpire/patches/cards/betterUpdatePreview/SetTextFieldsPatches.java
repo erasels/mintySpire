@@ -58,57 +58,6 @@ public class SetTextFieldsPatches {
         }
     }
 
-    private static boolean checkPattern(String original, String pattern) {
-        Pattern p = Pattern.compile(pattern);
-        Matcher matcher = p.matcher(original);
-        return matcher.find();
-    }
-
-    private static boolean checkForEnergy(String original) {
-        return checkPattern(original, "(\\[[RGBWE]])");
-    }
-
-    private static boolean checkForDynVar(String original) {
-        return checkPattern(original, "(![a-zA-Z:]+?!)");
-    }
-
-    private static boolean checkForColor(String original) {
-        return checkPattern(original, "(\\[#\\p{XDigit}{6}].*\\[])");
-    }
-
-    private static boolean checkForNewline(String original) {
-        return checkPattern(original, "^(NL)$");
-    }
-
-    private static boolean checkForWhitespace(String original) {
-        return checkPattern(original, "\\s+");
-    }
-
-    private static String checkForCustomKeyword(String word, AbstractCard card) {
-        String modified = word;
-        if (modified.length() > 0 && modified.charAt(modified.length() - 1) != ']' && !Character.isLetterOrDigit(modified.charAt(modified.length() - 1))) {
-            modified = word.substring(0, word.length() - 1);
-        }
-        modified = modified.toLowerCase();
-        String parentKeyword = GameDictionary.parentWord.get(modified);
-        if (parentKeyword != null) {
-            modified = parentKeyword;
-            if (GameDictionary.keywords.containsKey(modified)) {
-                if (BaseMod.keywordIsUnique(modified)) {
-                    ArrayList<String> diffKeywords = CardFields.AbCard.diffedKeywords.get(card);
-                    if (diffKeywords == null) {
-                        diffKeywords = new ArrayList<>();
-                    }
-                    diffKeywords.add(modified);
-                    CardFields.AbCard.diffedKeywords.set(card, diffKeywords);
-                    String prefix = BaseMod.getKeywordPrefix(modified);
-                    return word.replaceFirst(prefix, "");
-                }
-            }
-        }
-        return null;
-    }
-
     private static String calculateTextDiff(String original, String upgraded, AbstractCard card) {
         try {
             Function<String, List<String>> splitter = line -> {
@@ -131,6 +80,16 @@ public class SetTextFieldsPatches {
                     .build();
             List<DiffRow> rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
             String diffStr = rows.get(0).getOldLine();
+            if (diffStr.matches(".*DiffAdd.*")) {
+                generator = DiffRowGenerator.create()
+                        .showInlineDiffs(true)
+                        .lineNormalizer((s -> s))
+                        .inlineDiffBySplitter(splitter)
+                        .newTag(start -> start ? " [DiffAddS] " : " [DiffAddE] ")
+                        .build();
+                rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
+                diffStr = rows.get(0).getNewLine();
+            }
 
             return diffStr.replaceAll(" {2}(?=\\[Diff)", " ").replaceAll("(?<=(Rmv|Add)[SE]]) {2}", " ");
         } catch (DiffException e) {
