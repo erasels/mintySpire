@@ -7,14 +7,9 @@ import javassist.CtBehavior;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpirePatch(
-        clz = AbstractCard.class,
-        method = "initializeDescription"
-)
+@SpirePatch(clz = AbstractCard.class, method = "initializeDescription")
 public class KeywordFixPatch {
-    @SpireInsertPatch(
-            locator = KeywordFixPatchLocator.class
-    )
+    @SpireInsertPatch(locator = KeywordFixPatchLocator.class)
     public static void UpgradeDiffKeywordFix(AbstractCard _instance) {
         ArrayList<String> savedKeywords = CardFields.AbCard.diffedKeywords.get(_instance);
         if (savedKeywords != null) {
