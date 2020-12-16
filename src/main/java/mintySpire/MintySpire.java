@@ -2,10 +2,7 @@ package mintySpire;
 
 import basemod.*;
 import basemod.abstracts.CustomSavable;
-import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.OnStartBattleSubscriber;
-import basemod.interfaces.PostInitializeSubscriber;
-import basemod.interfaces.PreStartGameSubscriber;
+import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -18,7 +15,10 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.shop.ShopScreen;
+import com.megacrit.cardcrawl.shop.StoreRelic;
 import mintySpire.patches.metrics.MintyMetrics;
+import mintySpire.patches.relics.MawBankPatches;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,8 @@ public class MintySpire implements
         PostInitializeSubscriber,
         EditStringsSubscriber,
         PreStartGameSubscriber,
-        OnStartBattleSubscriber {
+        OnStartBattleSubscriber,
+        PostCreateShopRelicSubscriber {
 
     private static SpireConfig modConfig = null;
     private static String modID;
@@ -539,5 +540,10 @@ public class MintySpire implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void receiveCreateShopRelics(ArrayList<StoreRelic> arrayList, ShopScreen shopScreen) {
+        MawBankPatches.receive();
     }
 }
