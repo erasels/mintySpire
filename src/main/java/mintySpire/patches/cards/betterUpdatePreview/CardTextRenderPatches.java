@@ -45,10 +45,10 @@ public class CardTextRenderPatches {
         public static void Insert(AbstractCard _instance, @ByRef GlyphLayout[] gl, String word) {
             if(MintySpire.showBCUP()) {
                 if (word.length() > 0 && word.charAt(0) == '[') {
-                    if (word.equals("[DiffAddS]") ||
-                            word.equals("[DiffAddE]") ||
-                            word.equals("[DiffRmvS]") ||
-                            word.equals("[DiffRmvE]")
+                    if (word.equals("[diffAddS]") ||
+                            word.equals("[diffAddE]") ||
+                            word.equals("[diffRmvS]") ||
+                            word.equals("[diffRmvE]")
                     ) {
                         gl[0].setText(FontHelper.cardDescFont_N, "");
                         gl[0].width = 0;
@@ -75,7 +75,7 @@ public class CardTextRenderPatches {
         }
     }
 
-    public static class AlterDescriptionRenderingPatchLocator2 extends SpireInsertLocator {
+    public static class AlterDescriptionRenderingStrikethroughLocator extends SpireInsertLocator {
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception {
             Matcher matcher = new Matcher.FieldAccessMatcher(GlyphLayout.class, "width");
@@ -88,9 +88,11 @@ public class CardTextRenderPatches {
             clz = AbstractCard.class,
             method = "renderDescription"
     )
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "renderDescriptionCN"
+    )
     public static class AlterDescriptionRenderingPatch {
-        private static Color original = null;
-
         @SpireInsertPatch(
                 locator = AlterDescriptionRenderingPatchLocator.class,
                 localvars = {"tmp"}
@@ -100,7 +102,7 @@ public class CardTextRenderPatches {
         }
 
         @SpireInsertPatch(
-                locator = AlterDescriptionRenderingPatchLocator2.class,
+                locator = AlterDescriptionRenderingStrikethroughLocator.class,
                 localvars = {"font", "tmp", "i", "start_x", "gl", "draw_y", "spacing"}
         )
         public static void Strikethrough(AbstractCard _instance,
@@ -174,6 +176,10 @@ public class CardTextRenderPatches {
             clz = SingleCardViewPopup.class,
             method = "renderDescription"
     )
+    @SpirePatch(
+            clz = SingleCardViewPopup.class,
+            method = "renderDescriptionCN"
+    )
     public static class AlterBigDescriptionRenderingPatch {
 
         @SpireInstrumentPatch
@@ -194,7 +200,7 @@ public class CardTextRenderPatches {
         }
 
         @SpireInsertPatch(
-                locator = AlterBigDescriptionRenderingPatchLocator2.class,
+                locator = AlterBigDescriptionStrikethroughLocator.class,
                 localvars = {"font", "tmp", "i", "start_x", "gl", "draw_y"}
         )
         public static void Strikethrough(SingleCardViewPopup _instance,
@@ -243,7 +249,7 @@ public class CardTextRenderPatches {
         }
     }
 
-    public static class AlterBigDescriptionRenderingPatchLocator2 extends SpireInsertLocator {
+    public static class AlterBigDescriptionStrikethroughLocator extends SpireInsertLocator {
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception {
             Matcher matcher = new Matcher.FieldAccessMatcher(GlyphLayout.class, "width");
@@ -255,16 +261,16 @@ public class CardTextRenderPatches {
     private static void captureTags(AbstractCard _instance, @ByRef String[] tmp) {
         if(MintySpire.showBCUP()) {
             if (tmp[0].length() > 0 && tmp[0].charAt(0) == '[') {
-                if (tmp[0].equals("[DiffAddS] ")) {
+                if (tmp[0].equals("[diffAddS] ") || tmp[0].equals("[diffAddS]")) {
                     tmp[0] = "";
                     CardFields.AbCard.isInDiffAdd.set(_instance, true);
-                } else if (tmp[0].equals("[DiffAddE] ")) {
+                } else if (tmp[0].equals("[diffAddE] ") || tmp[0].equals("[diffAddE]")) {
                     tmp[0] = "";
                     CardFields.AbCard.isInDiffAdd.set(_instance, false);
-                } else if (tmp[0].equals("[DiffRmvS] ")) {
+                } else if (tmp[0].equals("[diffRmvS] ") || tmp[0].equals("[diffRmvS]")) {
                     tmp[0] = "";
                     CardFields.AbCard.isInDiffRmv.set(_instance, true);
-                } else if (tmp[0].equals("[DiffRmvE] ")) {
+                } else if (tmp[0].equals("[diffRmvE] ") || tmp[0].equals("[diffRmvE]")) {
                     tmp[0] = "";
                     CardFields.AbCard.isInDiffRmv.set(_instance, false);
                 }
