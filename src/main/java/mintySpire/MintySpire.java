@@ -264,7 +264,7 @@ public class MintySpire implements
         registerUIElement(HTBtn, false);
         textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[10], 1f / Settings.scale);
 
-        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos + (100f * Settings.scale) + textWidth, yPos + (15f * Settings.scale), 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
+        ModMinMaxSlider HandOpacitySlider = new ModMinMaxSlider("", xPos + 100f + textWidth, yPos + 15f, 0, 1, getHandOpacity(), "%.2f", settingsPanel, slider -> {
             if (modConfig != null) {
                 modConfig.setFloat("HandOpacity", slider.getValue());
                 saveConfig();
@@ -313,7 +313,7 @@ public class MintySpire implements
             saveConfig();
         };
 
-        float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F));
+        float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F, 1/Settings.scale), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F, 1/Settings.scale));
 
         List<Color> removeColors = new ArrayList<>();
         removeColors.add(new Color(0xFF6563FF));
@@ -322,7 +322,7 @@ public class MintySpire implements
         removeColors.add(new Color(0x5c3500FF));
         removeColors.add(new Color(0x003673FF));
         for (int i = 0; i < removeColors.size(); i++) {
-            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - (10f * Settings.scale), 0f, colorButton, colorButtonOutline, handleRemoveClick);
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - 10f, 0f, colorButton, colorButtonOutline, handleRemoveClick);
             Color color = removeColors.get(i);
             modColorDisplay.r = color.r;
             modColorDisplay.g = color.g;
@@ -349,7 +349,7 @@ public class MintySpire implements
         addColors.add(new Color(0x0095FFFF));
         addColors.add(new Color(0xc300FFFF));
         for (int i = 0; i < addColors.size(); i++) {
-            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - (10f * Settings.scale), 0f, colorButton, colorButtonOutline, handleAddClick);
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - 10f, 0f, colorButton, colorButtonOutline, handleAddClick);
             Color color = addColors.get(i);
             modColorDisplay.r = color.r;
             modColorDisplay.g = color.g;
@@ -415,7 +415,7 @@ public class MintySpire implements
             registerUIElement(ICBtn, true);
         }
 
-        ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f * Settings.scale, orgYPos + 45f * Settings.scale, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
+        ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f, orgYPos + 45f, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
                 button ->
                 {
                     if(pages.containsKey(curPage+1)) {
@@ -456,10 +456,10 @@ public class MintySpire implements
         if(!pages.containsKey(page)) {
             pages.put(page, new ArrayList<>());
             yPos = orgYPos;
-            elem.moveY(yPos);
+            elem.setY(yPos);
         }
         if(page > curPage) {
-            elem.moveX(elem.getX() + pageOffset);
+            elem.setX(elem.getX() + pageOffset);
         }
         pages.get(page).add(elem);
 
@@ -470,11 +470,11 @@ public class MintySpire implements
 
     private void changePage(int i) {
         for(IUIElement e : pages.get(curPage)) {
-            e.moveX(e.getX() + pageOffset);
+            e.setX(e.getX() + pageOffset);
         }
 
         for(IUIElement e : pages.get(i)) {
-            e.moveX(e.getX() - pageOffset);
+            e.setX(e.getX() - pageOffset);
         }
         curPage = i;
     }
