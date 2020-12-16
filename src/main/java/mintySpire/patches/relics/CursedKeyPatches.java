@@ -66,7 +66,8 @@ public class CursedKeyPatches {
     public static class SpookierChestEffect {
         @SpirePostfixPatch
         public static void patch(SpookyChestEffect __instance, @ByRef Color[] ___color) {
-            ___color[0] = MathUtils.randomBoolean()?Color.PURPLE.cpy():Color.FIREBRICK.cpy();
+            if(AbstractDungeon.player.hasRelic(CursedKey.ID))
+                ___color[0] = MathUtils.randomBoolean()?Color.PURPLE.cpy():Color.FIREBRICK.cpy();
         }
     }
 
@@ -74,10 +75,12 @@ public class CursedKeyPatches {
     public static class SpookierChestShineEffect {
         @SpirePostfixPatch
         public static void patch(ChestShineEffect __instance, @ByRef Color[] ___color) {
-            Color c = Color.FIREBRICK.cpy();
-            c.a = ___color[0].a;
-            c.b += (___color[0].r - ___color[0].b);
-            ___color[0] = c;
+            if(AbstractDungeon.player.hasRelic(CursedKey.ID)) {
+                Color c = Color.FIREBRICK.cpy();
+                c.a = ___color[0].a;
+                c.b += (___color[0].r - ___color[0].b);
+                ___color[0] = c;
+            }
         }
     }
 }
