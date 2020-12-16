@@ -176,6 +176,7 @@ public class MintySpire implements
     private float xPos = 350f, yPos = 750f, orgYPos = 750f;
     private ModPanel settingsPanel;
     private int curPage = 1;
+
     @Override
     public void receivePostInitialize() {
         UIStrings UIStrings = CardCrawlGame.languagePack.getUIString(MintySpire.makeID("OptionsMenu"));
@@ -207,7 +208,8 @@ public class MintySpire implements
                 });
         registerUIElement(MMBtn, true);
 
-        ModLabel MMIconScaleLabel = new ModLabel(TEXT[7], xPos + 40, yPos + 8, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> { });
+        ModLabel MMIconScaleLabel = new ModLabel(TEXT[7], xPos + 40, yPos + 8, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, l -> {
+        });
         registerUIElement(MMIconScaleLabel, false);
         float textWidth = FontHelper.getWidth(FontHelper.charDescFont, TEXT[7], 1f / Settings.scale);
 
@@ -313,7 +315,7 @@ public class MintySpire implements
             saveConfig();
         };
 
-        float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F, 1/Settings.scale), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F, 1/Settings.scale));
+        float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F, 1 / Settings.scale), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F, 1 / Settings.scale));
 
         List<Color> addColors = new ArrayList<>();
         addColors.add(new Color(0x7FFF00FF));
@@ -339,7 +341,8 @@ public class MintySpire implements
             addColorButtons.add(modColorDisplay);
             settingsPanel.addUIElement(modColorDisplay);
         }
-        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
+        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> {
+        }));
         registerUIElement(addColorLabel, true);
 
         List<Color> removeColors = new ArrayList<>();
@@ -366,7 +369,8 @@ public class MintySpire implements
             removeColorButtons.add(modColorDisplay);
             settingsPanel.addUIElement(modColorDisplay);
         }
-        ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
+        ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> {
+        }));
         registerUIElement(removeColorLabel, true);
 
         ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
@@ -415,7 +419,7 @@ public class MintySpire implements
             registerUIElement(ICBtn, true);
         }
 
-        if(pages.size() > 1) {
+        if (pages.size() > 1) {
             ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f, orgYPos + 45f, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
                     button ->
                     {
@@ -448,34 +452,37 @@ public class MintySpire implements
     }
 
     private final float pageOffset = 12000f;
-    private HashMap<Integer, ArrayList<IUIElement>> pages = new HashMap<Integer, ArrayList<IUIElement>>() {{put(1, new ArrayList<>());}};
+    private HashMap<Integer, ArrayList<IUIElement>> pages = new HashMap<Integer, ArrayList<IUIElement>>() {{
+        put(1, new ArrayList<>());
+    }};
     private float elementSpace = 50f;
     private float yThreshold = yPos - elementSpace * 12;
+
     private void registerUIElement(IUIElement elem, boolean decrement) {
         settingsPanel.addUIElement(elem);
 
-        int page = pages.size() + (yThreshold == yPos? 1 : 0);
-        if(!pages.containsKey(page)) {
+        int page = pages.size() + (yThreshold == yPos ? 1 : 0);
+        if (!pages.containsKey(page)) {
             pages.put(page, new ArrayList<>());
             yPos = orgYPos;
             elem.setY(yPos);
         }
-        if(page > curPage) {
+        if (page > curPage) {
             elem.setX(elem.getX() + pageOffset);
         }
         pages.get(page).add(elem);
 
-        if(decrement) {
+        if (decrement) {
             yPos -= elementSpace;
         }
     }
 
     private void changePage(int i) {
-        for(IUIElement e : pages.get(curPage)) {
+        for (IUIElement e : pages.get(curPage)) {
             e.setX(e.getX() + pageOffset);
         }
 
-        for(IUIElement e : pages.get(i)) {
+        for (IUIElement e : pages.get(i)) {
             e.setX(e.getX() - pageOffset);
         }
         curPage = i;
