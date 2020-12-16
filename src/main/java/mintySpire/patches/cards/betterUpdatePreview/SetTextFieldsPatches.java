@@ -8,6 +8,7 @@ import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import mintySpire.MintySpire;
 
@@ -26,7 +27,7 @@ public class SetTextFieldsPatches {
     public static class AbstractCardInitializeDescriptionPatch {
         @SpirePostfixPatch
         public static void defaultAndUpgradedText(AbstractCard _instance) {
-            if(MintySpire.showBCUP()) {
+            if (MintySpire.showBCUP()) {
                 if (_instance.upgraded) {
                     CardFields.AbCard.upgradedText.set(_instance, _instance.rawDescription);
                 } else {
@@ -43,7 +44,7 @@ public class SetTextFieldsPatches {
     public static class AbstractCardDisplayUpgradesPatch {
         @SpirePrefixPatch
         public static void diffText(AbstractCard _instance) {
-            if(MintySpire.showBCUP()) {
+            if (MintySpire.showBCUP()) {
                 String defaultText = CardFields.AbCard.defaultText.get(_instance);
                 String upgradedText = CardFields.AbCard.upgradedText.get(_instance);
                 if ("".equals(CardFields.AbCard.diffText.get(_instance)) && !defaultText.equals(upgradedText) && !"".equals(upgradedText)) {
@@ -58,57 +59,6 @@ public class SetTextFieldsPatches {
         }
     }
 
-    private static boolean checkPattern(String original, String pattern) {
-        Pattern p = Pattern.compile(pattern);
-        Matcher matcher = p.matcher(original);
-        return matcher.find();
-    }
-
-    private static boolean checkForEnergy(String original) {
-        return checkPattern(original, "(\\[[RGBWE]])");
-    }
-
-    private static boolean checkForDynVar(String original) {
-        return checkPattern(original, "(![a-zA-Z:]+?!)");
-    }
-
-    private static boolean checkForColor(String original) {
-        return checkPattern(original, "(\\[#\\p{XDigit}{6}].*\\[])");
-    }
-
-    private static boolean checkForNewline(String original) {
-        return checkPattern(original, "^(NL)$");
-    }
-
-    private static boolean checkForWhitespace(String original) {
-        return checkPattern(original, "\\s+");
-    }
-
-    private static String checkForCustomKeyword(String word, AbstractCard card) {
-        String modified = word;
-        if (modified.length() > 0 && modified.charAt(modified.length() - 1) != ']' && !Character.isLetterOrDigit(modified.charAt(modified.length() - 1))) {
-            modified = word.substring(0, word.length() - 1);
-        }
-        modified = modified.toLowerCase();
-        String parentKeyword = GameDictionary.parentWord.get(modified);
-        if (parentKeyword != null) {
-            modified = parentKeyword;
-            if (GameDictionary.keywords.containsKey(modified)) {
-                if (BaseMod.keywordIsUnique(modified)) {
-                    ArrayList<String> diffKeywords = CardFields.AbCard.diffedKeywords.get(card);
-                    if (diffKeywords == null) {
-                        diffKeywords = new ArrayList<>();
-                    }
-                    diffKeywords.add(modified);
-                    CardFields.AbCard.diffedKeywords.set(card, diffKeywords);
-                    String prefix = BaseMod.getKeywordPrefix(modified);
-                    return word.replaceFirst(prefix, "");
-                }
-            }
-        }
-        return null;
-    }
-
     private static String calculateTextDiff(String original, String upgraded, AbstractCard card) {
         try {
             Function<String, List<String>> splitter = line -> {
@@ -121,18 +71,34 @@ public class SetTextFieldsPatches {
                 }
                 return ret;
             };
-            DiffRowGenerator generator = DiffRowGenerator.create()
+            DiffRowGenerator.Builder builder = DiffRowGenerator.create()
                     .showInlineDiffs(true)
                     .lineNormalizer((s -> s))
                     .mergeOriginalRevised(true)
-                    .inlineDiffBySplitter(splitter)
-                    .oldTag(start -> start ? " [DiffRmvS] " : " [DiffRmvE] ")
-                    .newTag(start -> start ? " [DiffAddS] " : " [DiffAddE] ")
-                    .build();
+                    .oldTag(start -> start ? " [diffRmvS] " : " [diffRmvE] ")
+                    .newTag(start -> start ? " [diffAddS] " : " [diffAddE] ");
+            // Use default splitter for chinese/japanese, as they don't use spaces in card descriptions
+            if (!Settings.lineBreakViaCharacter) {
+                builder.inlineDiffBySplitter(splitter);
+            }
+            DiffRowGenerator generator = builder.build();
             List<DiffRow> rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
             String diffStr = rows.get(0).getOldLine();
+            if (diffStr.matches(".*diffAdd.*")) {
+                builder = DiffRowGenerator.create()
+                        .showInlineDiffs(true)
+                        .lineNormalizer((s -> s))
+                        .newTag(start -> start ? " [diffAddS] " : " [diffAddE] ");
+                // Use default splitter for chinese/japanese, as they don't use spaces in card descriptions
+                if (!Settings.lineBreakViaCharacter) {
+                    builder.inlineDiffBySplitter(splitter);
+                }
+                generator = builder.build();
+                rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
+                diffStr = rows.get(0).getNewLine();
+            }
 
-            return diffStr.replaceAll(" {2}(?=\\[Diff)", " ").replaceAll("(?<=(Rmv|Add)[SE]]) {2}", " ");
+            return diffStr.replaceAll(" {2}(?=\\[diff)", " ").replaceAll("(?<=(Rmv|Add)[SE]]) {2}", " ");
         } catch (DiffException e) {
             e.printStackTrace();
             return upgraded;

@@ -315,33 +315,6 @@ public class MintySpire implements
 
         float descWidth = NumberUtils.max(FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[12], 9999.0F, 0.0F, 1/Settings.scale), FontHelper.getSmartWidth(FontHelper.charDescFont, TEXT[13], 9999.0F, 0.0F, 1/Settings.scale));
 
-        List<Color> removeColors = new ArrayList<>();
-        removeColors.add(new Color(0xFF6563FF));
-        removeColors.add(new Color(0x666666FF));
-        removeColors.add(new Color(0x5c1500FF));
-        removeColors.add(new Color(0x5c3500FF));
-        removeColors.add(new Color(0x003673FF));
-        for (int i = 0; i < removeColors.size(); i++) {
-            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - 10f, 0f, colorButton, colorButtonOutline, handleRemoveClick);
-            Color color = removeColors.get(i);
-            modColorDisplay.r = color.r;
-            modColorDisplay.g = color.g;
-            modColorDisplay.b = color.b;
-            if (color.equals(removeColor)) {
-                modColorDisplay.rOutline = Color.GOLDENROD.r;
-                modColorDisplay.gOutline = Color.GOLDENROD.g;
-                modColorDisplay.bOutline = Color.GOLDENROD.b;
-            } else {
-                modColorDisplay.rOutline = Color.DARK_GRAY.r;
-                modColorDisplay.gOutline = Color.DARK_GRAY.g;
-                modColorDisplay.bOutline = Color.DARK_GRAY.b;
-            }
-            removeColorButtons.add(modColorDisplay);
-            registerUIElement(modColorDisplay, false);
-        }
-        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
-        registerUIElement(addColorLabel, true);
-
         List<Color> addColors = new ArrayList<>();
         addColors.add(new Color(0x7FFF00FF));
         addColors.add(new Color(0xE1FF00FF));
@@ -349,7 +322,7 @@ public class MintySpire implements
         addColors.add(new Color(0x0095FFFF));
         addColors.add(new Color(0xc300FFFF));
         for (int i = 0; i < addColors.size(); i++) {
-            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - 10f, 0f, colorButton, colorButtonOutline, handleAddClick);
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - (10f * Settings.scale), 0f, colorButton, colorButtonOutline, handleAddClick);
             Color color = addColors.get(i);
             modColorDisplay.r = color.r;
             modColorDisplay.g = color.g;
@@ -364,7 +337,34 @@ public class MintySpire implements
                 modColorDisplay.bOutline = Color.DARK_GRAY.b;
             }
             addColorButtons.add(modColorDisplay);
-            registerUIElement(modColorDisplay, false);
+            settingsPanel.addUIElement(modColorDisplay);
+        }
+        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
+        registerUIElement(addColorLabel, true);
+
+        List<Color> removeColors = new ArrayList<>();
+        removeColors.add(new Color(0xFF6563FF));
+        removeColors.add(new Color(0x666666FF));
+        removeColors.add(new Color(0x5c1500FF));
+        removeColors.add(new Color(0x5c3500FF));
+        removeColors.add(new Color(0x003673FF));
+        for (int i = 0; i < removeColors.size(); i++) {
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + descWidth + i * 96f, yPos - (10f * Settings.scale), 0f, colorButton, colorButtonOutline, handleRemoveClick);
+            Color color = removeColors.get(i);
+            modColorDisplay.r = color.r;
+            modColorDisplay.g = color.g;
+            modColorDisplay.b = color.b;
+            if (color.equals(removeColor)) {
+                modColorDisplay.rOutline = Color.GOLDENROD.r;
+                modColorDisplay.gOutline = Color.GOLDENROD.g;
+                modColorDisplay.bOutline = Color.GOLDENROD.b;
+            } else {
+                modColorDisplay.rOutline = Color.DARK_GRAY.r;
+                modColorDisplay.gOutline = Color.DARK_GRAY.g;
+                modColorDisplay.bOutline = Color.DARK_GRAY.b;
+            }
+            removeColorButtons.add(modColorDisplay);
+            settingsPanel.addUIElement(modColorDisplay);
         }
         ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
         registerUIElement(removeColorLabel, true);
