@@ -415,16 +415,18 @@ public class MintySpire implements
             registerUIElement(ICBtn, true);
         }
 
-        ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f, orgYPos + 45f, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
-                button ->
-                {
-                    if(pages.containsKey(curPage+1)) {
-                        changePage(curPage+1);
-                    } else {
-                        changePage(1);
-                    }
-                });
-        settingsPanel.addUIElement(FlipPageBtn);
+        if(pages.size() > 1) {
+            ModLabeledButton FlipPageBtn = new ModLabeledButton(TEXT[14], xPos + 450f, orgYPos + 45f, Settings.CREAM_COLOR, Color.WHITE, FontHelper.cardEnergyFont_L, settingsPanel,
+                    button ->
+                    {
+                        if (pages.containsKey(curPage + 1)) {
+                            changePage(curPage + 1);
+                        } else {
+                            changePage(1);
+                        }
+                    });
+            settingsPanel.addUIElement(FlipPageBtn);
+        }
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels", "", settingsPanel);
 
