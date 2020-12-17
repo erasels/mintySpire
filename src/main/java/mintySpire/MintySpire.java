@@ -77,6 +77,7 @@ public class MintySpire implements
             defaults.put("ShowUpdatePreview", Boolean.toString(true));
             defaults.put("UpdatePreviewAddColor", addColor.toString());
             defaults.put("UpdatePreviewRemoveColor", removeColor.toString());
+            defaults.put("PurgeCostDisplay", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,6 +173,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("ShowUpdatePreview");
+    }
+
+    public static boolean showPCD() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("PurgeCostDisplay");
     }
 
     private float xPos = 350f, yPos = 750f, orgYPos = 750f;
@@ -275,6 +283,17 @@ public class MintySpire implements
         });
         registerUIElement(HandOpacitySlider, true);
 
+        ModLabeledToggleButton PCDBtn = new ModLabeledToggleButton(TEXT[15], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showPCD(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("PurgeCostDisplay", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(PCDBtn, true);
+
         //Better Card Upgrade Preview
         ModLabeledToggleButton BCUPBtn = new ModLabeledToggleButton(TEXT[11], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBCUP(), settingsPanel, l -> {
         },
@@ -340,10 +359,9 @@ public class MintySpire implements
                 modColorDisplay.bOutline = Color.DARK_GRAY.b;
             }
             addColorButtons.add(modColorDisplay);
-            settingsPanel.addUIElement(modColorDisplay);
+            registerUIElement(modColorDisplay, false);
         }
-        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> {
-        }));
+        ModLabel addColorLabel = new ModLabel(TEXT[12], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
         registerUIElement(addColorLabel, true);
 
         List<Color> removeColors = new ArrayList<>();
@@ -368,10 +386,9 @@ public class MintySpire implements
                 modColorDisplay.bOutline = Color.DARK_GRAY.b;
             }
             removeColorButtons.add(modColorDisplay);
-            settingsPanel.addUIElement(modColorDisplay);
+            registerUIElement(modColorDisplay, false);
         }
-        ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> {
-        }));
+        ModLabel removeColorLabel = new ModLabel(TEXT[13], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, (modLabel -> { }));
         registerUIElement(removeColorLabel, true);
 
         ModLabeledToggleButton EFBtn = new ModLabeledToggleButton(TEXT[8], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {

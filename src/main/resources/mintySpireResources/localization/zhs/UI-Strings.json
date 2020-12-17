@@ -15,13 +15,19 @@
       "Highlight new next when previewing card upgrades",
       "Color of added card upgrade text:",
       "Color of removed card upgrade text:",
-      "Next Page"
+      "Next Page",
+      "Display the card removal cost when looking at the deck"
     ]
   },
   "mintySpire:GridselectHideButton": {
     "TEXT": [
       "隐藏",
       "恢复"
+    ]
+  },
+  "mintySpire:PurgeCostDeckView": {
+    "TEXT": [
+      "Card removal: "
     ]
   }
 }
