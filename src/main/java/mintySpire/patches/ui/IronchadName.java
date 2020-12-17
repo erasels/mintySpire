@@ -1,4 +1,4 @@
-package mintySpire.ui;
+package mintySpire.patches.ui;
 
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;

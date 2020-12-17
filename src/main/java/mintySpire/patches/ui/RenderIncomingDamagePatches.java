@@ -1,4 +1,4 @@
-package mintySpire.ui;
+package mintySpire.patches.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
