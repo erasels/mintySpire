@@ -43,21 +43,21 @@ public class CursedKeyPatches {
                             128,
                             false,
                             false);
-                }
 
-                if(vfxTimer <= 0) {
-                    vfxTimer = VFXINTERVAL;
-                    Color col;
-                    for (int i = 0; i < VFX_AMT; i++) {
-                        if(MathUtils.randomBoolean()) {
-                            col = Color.PURPLE;
-                        } else {
-                            col = Color.FIREBRICK;
+                    if(vfxTimer <= 0) {
+                        vfxTimer = VFXINTERVAL;
+                        Color col;
+                        for (int i = 0; i < VFX_AMT; i++) {
+                            if(MathUtils.randomBoolean()) {
+                                col = Color.PURPLE;
+                            } else {
+                                col = Color.FIREBRICK;
+                            }
+                            AbstractDungeon.effectsQueue.add(new BetterDebuffParticle(___hb, col));
                         }
-                        AbstractDungeon.effectsQueue.add(new BetterDebuffParticle(___hb, col));
                     }
+                    vfxTimer -= Gdx.graphics.getRawDeltaTime();
                 }
-                vfxTimer -= Gdx.graphics.getRawDeltaTime();
             }
         }
     }
