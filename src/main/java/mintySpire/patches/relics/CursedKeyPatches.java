@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.relics.CursedKey;
 import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
+import com.megacrit.cardcrawl.rooms.TreasureRoom;
 import com.megacrit.cardcrawl.vfx.ChestShineEffect;
 import com.megacrit.cardcrawl.vfx.scene.SpookyChestEffect;
 import mintySpire.vfx.BetterDebuffParticle;
@@ -24,7 +25,7 @@ public class CursedKeyPatches {
     public static class RenderCursedKeyChest {
         @SpirePostfixPatch
         public static void patch(AbstractChest __instance, SpriteBatch sb, Hitbox ___hb) {
-            if (!__instance.isOpen) {
+            if (!__instance.isOpen && normalChestCheck()) {
                 CursedKey r = (CursedKey) AbstractDungeon.player.getRelic(CursedKey.ID);
                 if (r != null) {
                     sb.draw(r.img,
@@ -66,7 +67,7 @@ public class CursedKeyPatches {
     public static class SpookierChestEffect {
         @SpirePostfixPatch
         public static void patch(SpookyChestEffect __instance, @ByRef Color[] ___color) {
-            if(AbstractDungeon.player.hasRelic(CursedKey.ID))
+            if(normalChestCheck() && AbstractDungeon.player.hasRelic(CursedKey.ID))
                 ___color[0] = MathUtils.randomBoolean()?Color.PURPLE.cpy():Color.FIREBRICK.cpy();
         }
     }
@@ -75,12 +76,16 @@ public class CursedKeyPatches {
     public static class SpookierChestShineEffect {
         @SpirePostfixPatch
         public static void patch(ChestShineEffect __instance, @ByRef Color[] ___color) {
-            if(AbstractDungeon.player.hasRelic(CursedKey.ID)) {
+            if(normalChestCheck() && AbstractDungeon.player.hasRelic(CursedKey.ID)) {
                 Color c = Color.FIREBRICK.cpy();
                 c.a = ___color[0].a;
                 c.b += (___color[0].r - ___color[0].b);
                 ___color[0] = c;
             }
         }
+    }
+
+    private static boolean normalChestCheck() {
+        return AbstractDungeon.getCurrMapNode() != null && AbstractDungeon.getCurrRoom() instanceof TreasureRoom;
     }
 }
