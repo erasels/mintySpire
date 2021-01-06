@@ -78,6 +78,7 @@ public class MintySpire implements
             defaults.put("UpdatePreviewAddColor", addColor.toString());
             defaults.put("UpdatePreviewRemoveColor", removeColor.toString());
             defaults.put("PurgeCostDisplay", Boolean.toString(true));
+            defaults.put("TurnDisplay", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,6 +181,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("PurgeCostDisplay");
+    }
+
+    public static boolean showTD() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("TurnDisplay");
     }
 
     private float xPos = 350f, yPos = 750f, orgYPos = 750f;
@@ -293,6 +301,17 @@ public class MintySpire implements
                     }
                 });
         registerUIElement(PCDBtn, true);
+
+        ModLabeledToggleButton TDBtn = new ModLabeledToggleButton(TEXT[16], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showTD(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("TurnDisplay", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(TDBtn, true);
 
         //Better Card Upgrade Preview
         ModLabeledToggleButton BCUPBtn = new ModLabeledToggleButton(TEXT[11], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBCUP(), settingsPanel, l -> {

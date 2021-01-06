@@ -16,7 +16,8 @@
       "Color of added card upgrade text:",
       "Color of removed card upgrade text:",
       "Next Page",
-      "Display the card removal cost when looking at the deck"
+      "Display the card removal cost when looking at the deck",
+      "Display the current turn during combat"
     ]
   },
   "mintySpire:GridselectHideButton": {
@@ -28,6 +29,11 @@
   "mintySpire:PurgeCostDeckView": {
     "TEXT": [
       "Card removal: "
+    ]
+  },
+  "mintySpire:TurnCounter": {
+    "TEXT": [
+      "Turn: "
     ]
   }
 }
