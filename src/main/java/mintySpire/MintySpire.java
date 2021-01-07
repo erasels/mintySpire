@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import mintySpire.patches.cards.RelicAffectionPatch;
 import mintySpire.patches.metrics.MintyMetrics;
 import mintySpire.patches.relics.MawBankPatches;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -201,6 +202,7 @@ public class MintySpire implements
         addColor = Color.valueOf(modConfig.getString("UpdatePreviewAddColor"));
         removeColor = Color.valueOf(modConfig.getString("UpdatePreviewRemoveColor"));
 
+        RelicAffectionPatch.receivePostInit();
         settingsPanel = new ModPanel();
 
         ModLabeledToggleButton BNBtn = new ModLabeledToggleButton(TEXT[1], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBN(), settingsPanel, l -> {

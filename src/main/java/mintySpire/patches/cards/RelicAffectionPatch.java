@@ -1,5 +1,6 @@
 package mintySpire.patches.cards;
 
+import basemod.helpers.CardBorderGlowManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
@@ -14,6 +15,7 @@ import com.megacrit.cardcrawl.relics.PenNib;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import mintySpire.MintySpire;
 
 import java.util.ArrayList;
 
@@ -27,14 +29,23 @@ public class RelicAffectionPatch {
     private static AbstractRelic pNib = new PenNib();
     private static AbstractRelic nCon = new Necronomicon();
 
-    @SpirePatch(clz = CardGlowBorder.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {AbstractCard.class, Color.class})
-    public static class CardGlowPatch {
-        @SpirePostfixPatch
-        public static void patch(CardGlowBorder __instance, AbstractCard c, Color col, @ByRef Color[] ___color) {
-            if(shouldChangeGlow(c)) {
-                ___color[0] = Color.PURPLE.cpy();
+    public static void receivePostInit() {
+        CardBorderGlowManager.addGlowInfo(new CardBorderGlowManager.GlowInfo() {
+            @Override
+            public boolean test(AbstractCard c) {
+                return shouldChangeGlow(c);
             }
-        }
+
+            @Override
+            public Color getColor(AbstractCard c) {
+                return Color.PURPLE.cpy();
+            }
+
+            @Override
+            public String glowID() {
+                return MintySpire.makeID("RelicAffectionGlow");
+            }
+        });
     }
 
     public static boolean shouldChangeGlow(AbstractCard c) {
