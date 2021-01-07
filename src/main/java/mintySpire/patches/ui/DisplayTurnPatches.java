@@ -21,8 +21,6 @@ import mintySpire.MintySpire;
 import java.util.ArrayList;
 
 public class DisplayTurnPatches {
-
-
     @SpirePatch(clz = AbstractRoom.class, method = "render")
     public static class RenderTurnCounter {
         private static float START_X = Settings.WIDTH - (100f * Settings.scale);

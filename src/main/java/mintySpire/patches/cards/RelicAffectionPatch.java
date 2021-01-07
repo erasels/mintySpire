@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Necronomicon;
 import com.megacrit.cardcrawl.relics.PenNib;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -92,7 +93,7 @@ public class RelicAffectionPatch {
     public static class RenderPatch {
         public static void Postfix(AbstractCard card, SpriteBatch sb, boolean b1, boolean b2) {
             int numRelics = 0;
-            if (cardFields.isNecroAff.get(card)) {
+            if (cardFields.isNecroAff.get(card) && combatCheck()) {
                 nCon.currentX = card.current_x + 390.0f * card.drawScale / 3.0f * Settings.scale;
                 nCon.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale;
                 nCon.scale = card.drawScale;
@@ -101,7 +102,7 @@ public class RelicAffectionPatch {
                 numRelics++;
             }
 
-            if (cardFields.isPenAff.get(card)) {
+            if (cardFields.isPenAff.get(card) && combatCheck()) {
                 pNib.counter = -1;
                 pNib.currentX = card.current_x + (390.0f + (numRelics*pNib.img.getWidth())) * card.drawScale / 3.0f * Settings.scale;
                 pNib.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale;
@@ -110,6 +111,16 @@ public class RelicAffectionPatch {
                 pNib.render(sb);
                 //numRelics++;
             }
+        }
+
+        private static boolean combatCheck() {
+            if(AbstractDungeon.getCurrMapNode() != null) {
+                AbstractRoom r = AbstractDungeon.getCurrRoom();
+                if(r != null) {
+                    return r.phase == AbstractRoom.RoomPhase.COMBAT;
+                }
+            }
+            return false;
         }
     }
 
