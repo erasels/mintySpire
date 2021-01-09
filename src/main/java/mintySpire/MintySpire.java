@@ -37,7 +37,8 @@ public class MintySpire implements
         EditStringsSubscriber,
         PreStartGameSubscriber,
         OnStartBattleSubscriber,
-        PostCreateShopRelicSubscriber {
+        PostCreateShopRelicSubscriber,
+        StartGameSubscriber{
 
     private static SpireConfig modConfig = null;
     private static String modID;
@@ -565,6 +566,11 @@ public class MintySpire implements
     @Override
     public void receivePreStartGame() {
         inkHeartCompatibility = false;
+    }
+
+    @Override
+    public void receiveStartGame() {
+        ShopScreen.actualPurgeCost = ShopScreen.purgeCost;
     }
 
     @Override
