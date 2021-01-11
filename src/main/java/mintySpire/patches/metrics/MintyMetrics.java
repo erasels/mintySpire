@@ -6,6 +6,7 @@ import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireOverride;
 import com.evacipated.cardcrawl.modthespire.lib.SpireSuper;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
@@ -93,6 +94,8 @@ public class MintyMetrics extends Metrics {
             types.add("Undefined");
         }
         addData("items_purchased_type", types);
+
+        addData("language", Settings.language);
     }
 
     @SpireOverride
