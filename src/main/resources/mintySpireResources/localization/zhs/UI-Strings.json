@@ -9,15 +9,15 @@
       "移除浏览卡牌时的原版关键字显示",
       "在地图旁边显示小地图",
       "小地图缩放",
-      "Display the Echo Form Reminder",
-      "Show which shop items will become unaffordable when hovering over an item",
-      "Make the Merchant's hand transparent",
-      "Highlight new text when previewing card upgrades",
-      "Color of added card upgrade text:",
-      "Color of removed card upgrade text:",
-      "Next Page",
-      "Display the card removal cost when looking at the deck",
-      "Display the current turn during combat"
+      "显示回响形态提示",
+      "在悬停某个商店物品时显示购买后买不起的商品",
+      "商人的手半透明",
+      "预览卡牌升级时高亮新增内容",
+      "将卡牌升级中的新增部分的染色：",
+      "将卡牌升级中的删除部分的染色：",
+      "下一页",
+      "在查看牌组时显示删牌费用",
+      "在战斗中显示当前回合数"
     ]
   },
   "mintySpire:GridselectHideButton": {
@@ -28,12 +28,12 @@
   },
   "mintySpire:PurgeCostDeckView": {
     "TEXT": [
-      "Card removal: "
+      "删牌费用: "
     ]
   },
   "mintySpire:TurnCounter": {
     "TEXT": [
-      "Turn: "
+      "回合数: "
     ]
   }
 }
