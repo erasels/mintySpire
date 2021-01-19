@@ -1,5 +1,6 @@
 package mintySpire.patches.ui;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,38 +16,23 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
-import java.lang.reflect.Field;
-
-import static mintySpire.MintySpire.runLogger;
 import static mintySpire.MintySpire.showTID;
 
 public class RenderIncomingDamagePatches {
    @SpirePatch(clz = AbstractDungeon.class, method = "render")
     public static class TIDHook {
-        private static Field multiIntentField;
 
         @SpireInsertPatch(locator = Locator.class)
         public static void hook(AbstractDungeon __instance, SpriteBatch sb) {
             if(showTID()) {
                 if (AbstractDungeon.player != null && AbstractDungeon.currMapNode != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
-                    if(multiIntentField == null) {
-                        try {
-                            multiIntentField = AbstractMonster.class.getDeclaredField("intentMultiAmt");
-                            multiIntentField.setAccessible(true);
-                        } catch (Exception e) {
-                            runLogger.error("Exception occurred when getting private field " + "intentMultiAmt" + " of " + AbstractMonster.class.getName(), e);
-                        }
-                    }
                     int c = 0, dmg = 0, tmp = 0;
                     if(AbstractDungeon.getMonsters() != null) {
                         for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
                             if (!m.isDeadOrEscaped() && isAttacking(m) && !MonsterIntentHiddenField.isIntentHidden.get(m)) {
                                 c++;
                                 int multiAmt = 0;
-                                try {
-                                    multiAmt = (int) multiIntentField.get(m);
-                                } catch (IllegalAccessException ignored) {
-                                }
+                                multiAmt = ReflectionHacks.getPrivate(m, AbstractMonster.class, "intentMultiAmt");
                                 tmp = m.getIntentDmg();
                                 if (multiAmt > 1) {
                                     tmp *= multiAmt;
@@ -90,7 +76,7 @@ public class RenderIncomingDamagePatches {
     }
 
     public static boolean isAttacking(AbstractMonster m) {
-        return m.intent == AbstractMonster.Intent.ATTACK || m.intent == AbstractMonster.Intent.ATTACK_BUFF || m.intent == AbstractMonster.Intent.ATTACK_DEBUFF || m.intent == AbstractMonster.Intent.ATTACK_DEFEND;
+        return m.getIntentBaseDmg() >= 0;
     }
 
     public static Texture getAttackIntent(int dmg) {
