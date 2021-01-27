@@ -2,7 +2,6 @@ package mintySpire.patches.monsters;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.monsters.beyond.TimeEater;
 import com.megacrit.cardcrawl.monsters.city.Champ;
@@ -22,17 +21,21 @@ public class HalfwayHealthbarTextPatch {
                     if (m.getClassName().equals(FontHelper.class.getName()) && m.getMethodName().equals("renderFontCentered")) {
                         m.replace("{" +
                                 "if("+ MintySpire.class.getName() +".showHH() && ("+SlimeBoss.class.getName()+".ID.equals(this.id) || "+ Champ.class.getName()+".ID.equals(this.id) || "+ TimeEater.class.getName()+".ID.equals(this.id))) {" +
-                                FontHelper.class.getName()+".renderFontCentered(sb, "+FontHelper.class.getName()+".healthInfoFont, this.currentHealth + \"/\" + this.maxHealth + \" (\"+this.maxHealth/2+\")\", " +
-                                "this.hb.cX, y + HEALTH_BAR_OFFSET_Y + HEALTH_TEXT_OFFSET_Y + 5.0F * "+ Settings.class.getName()+".scale, this.hbTextColor);" +
-                                "} else {" +
-                                FontHelper.class.getName()+".renderFontCentered(sb, "+FontHelper.class.getName()+".healthInfoFont, this.currentHealth + \"/\" + this.maxHealth, " +
-                                "this.hb.cX, y + HEALTH_BAR_OFFSET_Y + HEALTH_TEXT_OFFSET_Y + 5.0F * "+ Settings.class.getName()+".scale, this.hbTextColor);" +
+                                "$3 += " + TextRender.class.getName() + ".getHPTextAddition(this);" +
                                 "}" +
+                                "$proceed($$);" +
                                 "}");
                     }
                 }
             };
         }
+
+        public static String getHPTextAddition(AbstractCreature c) {
+            String addition = " (%d)";
+            if(!(c.isDead || c.isDying)) {
+                return String.format(addition, c.maxHealth/2);
+            }
+            return "";
+        }
     }
 }
-//FontHelper.renderFontCentered(sb, FontHelper.healthInfoFont, this.currentHealth + "/" + this.maxHealth, this.hb.cX, y + HEALTH_BAR_OFFSET_Y + HEALTH_TEXT_OFFSET_Y + 5.0F * Settings.scale, this.hbTextColor);
