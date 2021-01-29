@@ -17,7 +17,8 @@
       "Color of removed card upgrade text:",
       "Next Page",
       "Display the card removal cost when looking at the deck",
-      "Display the current turn during combat"
+      "Display the current turn during combat",
+      "Increase size of power amounts in combat"
     ]
   },
   "mintySpire:GridselectHideButton": {

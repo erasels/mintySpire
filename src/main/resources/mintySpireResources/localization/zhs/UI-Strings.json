@@ -17,7 +17,8 @@
       "将卡牌升级中的删除部分的染色：",
       "下一页",
       "在查看牌组时显示删牌费用",
-      "在战斗中显示当前回合数"
+      "在战斗中显示当前回合数",
+      "Increase size of power amounts in combat"
     ]
   },
   "mintySpire:GridselectHideButton": {

@@ -81,6 +81,7 @@ public class MintySpire implements
             defaults.put("UpdatePreviewRemoveColor", removeColor.toString());
             defaults.put("PurgeCostDisplay", Boolean.toString(true));
             defaults.put("TurnDisplay", Boolean.toString(true));
+            defaults.put("BiggerPowerFonts", Boolean.toString(false));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,6 +191,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("TurnDisplay");
+    }
+
+    public static boolean showBPF() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("BiggerPowerFonts");
     }
 
     private float xPos = 350f, yPos = 750f, orgYPos = 750f;
@@ -445,6 +453,17 @@ public class MintySpire implements
                     }
                 });
         registerUIElement(SBBtn, true);
+
+        ModLabeledToggleButton BPFBtn = new ModLabeledToggleButton(TEXT[17], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showBPF(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("BiggerPowerFonts", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(BPFBtn, true);
 
         if (Settings.language == Settings.GameLanguage.ENG || Settings.language == Settings.GameLanguage.ZHS) {
             ModLabeledToggleButton ICBtn = new ModLabeledToggleButton(TEXT[2], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showIC(), settingsPanel, l -> {
