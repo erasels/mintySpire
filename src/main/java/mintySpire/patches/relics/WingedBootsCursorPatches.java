@@ -9,16 +9,18 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.map.MapRoomNode;
+import com.megacrit.cardcrawl.screens.DungeonMapScreen;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
 public class WingedBootsCursorPatches {
+    public static boolean revert = false;
+    public static Texture cursor;
+    public static Texture newCursor;
+    private static Hitbox hovered;
+
     @SpirePatch(clz = MapRoomNode.class, method = "update")
     public static class ExchangeCursor {
-        public static boolean revert = false;
-        public static Texture cursor;
-        public static Texture newCursor;
-        private static Hitbox hovered;
         //Inserts after node hoevered true
         @SpireInsertPatch(locator = NodeHoveredLocator.class, localvars = {"wingedConnection", "normalConnection"})
         public static void patch(MapRoomNode __instance, Hitbox ___hb,boolean wingedConnection, boolean normalConnection) {
@@ -31,14 +33,6 @@ public class WingedBootsCursorPatches {
                 }
                 ReflectionHacks.setPrivate(CardCrawlGame.cursor, GameCursor.class, "img", newCursor);
                 revert = true;
-            }
-        }
-
-        @SpireInsertPatch(locator = NodeSelectedLocator.class)
-        public static void patch2(MapRoomNode __instance) {
-            //Revert if node clicked so it doesn't get stuck until next map opening
-            if(revert) {
-                revert();
             }
         }
 
@@ -63,11 +57,23 @@ public class WingedBootsCursorPatches {
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
+    }
 
-        private static void revert() {
-            ReflectionHacks.setPrivate(CardCrawlGame.cursor, GameCursor.class, "img", cursor);
-            hovered = null;
-            revert = false;
+    @SpirePatch(clz = DungeonMapScreen.class, method = "close")
+    @SpirePatch(clz = DungeonMapScreen.class, method = "closeInstantly")
+    public static class RevertOnMapClose {
+        @SpirePostfixPatch
+        public static void patch(DungeonMapScreen __instance) {
+            if(revert) {
+                revert();
+            }
         }
+    }
+
+
+    private static void revert() {
+        ReflectionHacks.setPrivate(CardCrawlGame.cursor, GameCursor.class, "img", cursor);
+        hovered = null;
+        revert = false;
     }
 }
