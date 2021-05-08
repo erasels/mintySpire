@@ -573,6 +573,8 @@ public class MintySpire implements
                 return "zhs";
             case KOR:
                 return "kor";
+            case RUS:
+                return "rus";
             default:
                 return "eng";
         }
