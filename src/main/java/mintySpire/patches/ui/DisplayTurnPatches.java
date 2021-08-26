@@ -37,7 +37,7 @@ public class DisplayTurnPatches {
                 String msg = text + GameActionManager.turn;
                 Color c = sb.getColor();
                 sb.setColor(Color.WHITE);
-                float w = ImageMaster.TIMER_ICON.getWidth(), h = ImageMaster.TIMER_ICON.getHeight();
+                float w = ImageMaster.TIMER_ICON.getWidth() * Settings.scale, h = ImageMaster.TIMER_ICON.getHeight() * Settings.scale;
                 sb.draw(ImageMaster.TIMER_ICON, START_X - (w/2f), START_Y - (h/2f), w, h);
                 FontHelper.renderFontLeft(sb, FontHelper.panelNameFont, msg, START_X + (w/2f), START_Y, Settings.CREAM_COLOR);
                 sb.setColor(c);
