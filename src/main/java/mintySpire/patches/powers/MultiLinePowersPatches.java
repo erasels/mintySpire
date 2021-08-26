@@ -47,6 +47,7 @@ public class MultiLinePowersPatches {
         }
     }
 
+    @SpirePrefixPatch
     public static void Prefix(AbstractCreature __instance, SpriteBatch sb, float x, float y) {
         offsetY = 0;
         count = 0;
