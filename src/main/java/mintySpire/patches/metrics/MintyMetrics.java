@@ -25,7 +25,7 @@ import java.util.HashMap;
 import static com.megacrit.cardcrawl.helpers.TipTracker.pref;
 
 public class MintyMetrics extends Metrics {
-    public static String url = "http://mintymetrics.atwebpages.com";
+    public static String url = "http://mintymetrics2.atwebpages.com";
 
     public static ArrayList<String> acts = new ArrayList<>();
 
