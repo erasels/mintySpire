@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SetTextFieldsPatches {
     @SpirePatch(
@@ -61,16 +63,6 @@ public class SetTextFieldsPatches {
 
     private static String calculateTextDiff(String original, String upgraded, AbstractCard card) {
         try {
-            Function<String, List<String>> splitter = line -> {
-                List<String> ret = new ArrayList<>();
-                if (line != null) {
-                    String[] words = line.split("\\s+");
-                    for (String word : words) {
-                        ret.add(word + " ");
-                    }
-                }
-                return ret;
-            };
             DiffRowGenerator.Builder builder = DiffRowGenerator.create()
                     .showInlineDiffs(true)
                     .lineNormalizer((s -> s))
@@ -79,7 +71,9 @@ public class SetTextFieldsPatches {
                     .newTag(start -> start ? " [diffAddS] " : " [diffAddE] ");
             // Use default splitter for chinese/japanese, as they don't use spaces in card descriptions
             if (!Settings.lineBreakViaCharacter) {
-                builder.inlineDiffBySplitter(splitter);
+                builder.inlineDiffBySplitter(SetTextFieldsPatches::splitter);
+            } else {
+                builder.inlineDiffBySplitter(createSplitterCN(card.keywords));
             }
             DiffRowGenerator generator = builder.build();
             List<DiffRow> rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
@@ -91,7 +85,9 @@ public class SetTextFieldsPatches {
                         .newTag(start -> start ? " [diffAddS] " : " [diffAddE] ");
                 // Use default splitter for chinese/japanese, as they don't use spaces in card descriptions
                 if (!Settings.lineBreakViaCharacter) {
-                    builder.inlineDiffBySplitter(splitter);
+                    builder.inlineDiffBySplitter(SetTextFieldsPatches::splitter);
+                } else {
+                    builder.inlineDiffBySplitter(createSplitterCN(card.keywords));
                 }
                 generator = builder.build();
                 rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
@@ -103,5 +99,34 @@ public class SetTextFieldsPatches {
             e.printStackTrace();
             return upgraded;
         }
+    }
+
+    private static List<String> splitter(String line) {
+        List<String> ret = new ArrayList<>();
+        if (line != null) {
+            String[] words = line.split("\\s+");
+            for (String word : words) {
+                ret.add(word + " ");
+            }
+        }
+        return ret;
+    }
+
+    private static Function<String, List<String>> createSplitterCN(List<String> keywords) {
+        return line -> {
+            List<String> ret = new ArrayList<>();
+            if (line != null) {
+                String[] words = line.split("\\s+");
+                for (String word : words) {
+                    if (word.equals("NL") || keywords.contains(word.toLowerCase())) {
+                        ret.add(word + " ");
+                    } else {
+                        ret.addAll(Stream.of(word.toCharArray()).map(String::valueOf).collect(Collectors.toList()));
+                        ret.add(" ");
+                    }
+                }
+            }
+            return ret;
+        };
     }
 }
