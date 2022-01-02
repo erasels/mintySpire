@@ -1,6 +1,7 @@
 package mintySpire.patches.ui;
 
 import basemod.ReflectionHacks;
+import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -122,6 +123,33 @@ public class RenderIncomingDamagePatches {
         private static class Locator2 extends SpireInsertLocator {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractMonster.class, "renderIntentVfxBehind");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
+    @SpirePatch(clz = CustomMonster.class, method = "render")
+    public static class CheckIfIntentHiddenCustomMonster {
+        @SpireInsertPatch(locator = Locator.class)
+        public static void patchBeforeRender(AbstractMonster __instance, SpriteBatch sb) {
+            MonsterIntentHiddenField.isIntentHidden.set(__instance, true);
+        }
+
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void patchInRender(AbstractMonster __instance, SpriteBatch sb) {
+            MonsterIntentHiddenField.isIntentHidden.set(__instance, false);
+        }
+
+        private static class Locator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractPlayer.class, "hasRelic");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        private static class Locator2 extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(CustomMonster.class, "renderIntentVfxBehind");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
