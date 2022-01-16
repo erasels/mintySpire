@@ -113,16 +113,25 @@ public class SetTextFieldsPatches {
     }
 
     private static Function<String, List<String>> createSplitterCN(List<String> keywords) {
+        Pattern splitBySpaces = Pattern.compile("(?<=\\s)(?=[^\\s])");
+        Pattern asciiChars = Pattern.compile("[\\x00-\\x7F]+");
+        Pattern splitByAsciiAndNonAscii = Pattern.compile("(?<=[^\\x00-\\x7F])(?=[\\x00-\\x7F])|(?<=[\\x00-\\x7F])(?=[^\\x00-\\x7F])");
         return line -> {
             List<String> ret = new ArrayList<>();
             if (line != null) {
-                String[] words = line.split("\\s+");
+                String[] words = splitBySpaces.split(line);
                 for (String word : words) {
-                    if (word.equals("NL") || keywords.contains(word.toLowerCase())) {
-                        ret.add(word + " ");
+                    if (asciiChars.matcher(word).matches() || keywords.contains(word.trim().toLowerCase())) {
+                        ret.add(word);
                     } else {
-                        ret.addAll(Stream.of(word.toCharArray()).map(String::valueOf).collect(Collectors.toList()));
-                        ret.add(" ");
+                        String[] words1 = splitByAsciiAndNonAscii.split(word);
+                        for (String word1 : words1) {
+                            if (asciiChars.matcher(word1).matches()) {
+                                ret.add(word1);
+                            } else {
+                                ret.addAll(word1.chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toList()));
+                            }
+                        }
                     }
                 }
             }
