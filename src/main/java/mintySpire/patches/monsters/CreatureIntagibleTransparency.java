@@ -1,5 +1,6 @@
 package mintySpire.patches.monsters;
 
+import basemod.abstracts.CustomMonster;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.characters.Watcher;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.IntangiblePlayerPower;
@@ -20,7 +22,8 @@ import java.util.ArrayList;
 public class CreatureIntagibleTransparency {
     //If performance hit too big, add a boolean to abstract monster and set it to true false if the intagible power gets applied and removed. Check for it instead of hasPower
     //Monsters
-    @SpirePatch(clz = AbstractMonster.class, method = "render")
+    @SpirePatch2(clz = AbstractMonster.class, method = "render")
+    @SpirePatch2(clz = CustomMonster.class, method = "render")
     public static class RenderAtlasColorChanger {
         @SpireInsertPatch(locator = Locator.class)
         public static void Insert(AbstractMonster __instance, SpriteBatch sb) {
@@ -38,11 +41,12 @@ public class CreatureIntagibleTransparency {
     }
 
     @SpirePatch(clz = AbstractMonster.class, method = "render")
+    @SpirePatch2(clz = CustomMonster.class, method = "render")
     public static class RenderSkeletonColorChanger {
-        @SpireInsertPatch(locator = Locator.class, localvars = {"skeleton"})
-        public static void Insert(AbstractMonster __instance, SpriteBatch sb, @ByRef Skeleton[] tmp) {
+        @SpireInsertPatch(locator = Locator.class)
+        public static void Insert(AbstractMonster __instance, SpriteBatch sb, Skeleton ___skeleton) {
             if(hasAnyPower(__instance, IntangiblePlayerPower.POWER_ID, IntangiblePower.POWER_ID)) {
-                tmp[0].setColor(oscillarator(__instance.tint.color));
+                ___skeleton.setColor(oscillarator(__instance.tint.color));
             }
         }
 
@@ -100,11 +104,12 @@ public class CreatureIntagibleTransparency {
     }
 
     @SpirePatch(clz = AbstractPlayer.class, method = "renderPlayerImage")
+    @SpirePatch2(clz = Watcher.class, method = "renderPlayerImage")
     public static class PlayerRenderSkeletonColorChanger {
-        @SpireInsertPatch(locator = Locator.class, localvars = {"skeleton"})
-        public static void Insert(AbstractPlayer __instance, SpriteBatch sb, @ByRef Skeleton[] tmp) {
+        @SpireInsertPatch(locator = Locator.class)
+        public static void Insert(AbstractPlayer __instance, SpriteBatch sb, Skeleton ___skeleton) {
             if(__instance.hasPower(IntangiblePlayerPower.POWER_ID)) {
-                tmp[0].setColor(oscillarator(__instance.tint.color));
+                ___skeleton.setColor(oscillarator(__instance.tint.color));
             }
         }
 
