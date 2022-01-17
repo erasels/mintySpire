@@ -15,6 +15,7 @@ import mintySpire.MintySpire;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +31,9 @@ public class SetTextFieldsPatches {
         @SpirePostfixPatch
         public static void defaultAndUpgradedText(AbstractCard _instance) {
             if (MintySpire.showBCUP()) {
+                if (Settings.lineBreakViaCharacter) {
+                    CardFields.AbCard.keywordSet.get(_instance).addAll(_instance.keywords);
+                }
                 if (_instance.upgraded) {
                     CardFields.AbCard.upgradedText.set(_instance, _instance.rawDescription);
                 } else {
@@ -73,7 +77,7 @@ public class SetTextFieldsPatches {
             if (!Settings.lineBreakViaCharacter) {
                 builder.inlineDiffBySplitter(SetTextFieldsPatches::splitter);
             } else {
-                builder.inlineDiffBySplitter(createSplitterCN(card.keywords));
+                builder.inlineDiffBySplitter(createSplitterCN(CardFields.AbCard.keywordSet.get(card)));
             }
             DiffRowGenerator generator = builder.build();
             List<DiffRow> rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
@@ -87,7 +91,7 @@ public class SetTextFieldsPatches {
                 if (!Settings.lineBreakViaCharacter) {
                     builder.inlineDiffBySplitter(SetTextFieldsPatches::splitter);
                 } else {
-                    builder.inlineDiffBySplitter(createSplitterCN(card.keywords));
+                    builder.inlineDiffBySplitter(createSplitterCN(CardFields.AbCard.keywordSet.get(card)));
                 }
                 generator = builder.build();
                 rows = generator.generateDiffRows(Collections.singletonList(original), Collections.singletonList(upgraded));
@@ -112,7 +116,7 @@ public class SetTextFieldsPatches {
         return ret;
     }
 
-    private static Function<String, List<String>> createSplitterCN(List<String> keywords) {
+    private static Function<String, List<String>> createSplitterCN(Set<String> keywords) {
         Pattern splitBySpaces = Pattern.compile("(?<=\\s)(?=[^\\s])");
         Pattern asciiChars = Pattern.compile("[\\x00-\\x7F]+");
         Pattern splitByAsciiAndNonAscii = Pattern.compile("(?<=[^\\x00-\\x7F])(?=[\\x00-\\x7F])|(?<=[\\x00-\\x7F])(?=[^\\x00-\\x7F])");
