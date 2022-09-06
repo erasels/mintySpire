@@ -1,15 +1,12 @@
 package mintySpire.patches.cards.betterUpdatePreview;
 
-import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
-import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.GameDictionary;
 import mintySpire.MintySpire;
 
 import java.util.ArrayList;
@@ -17,10 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SetTextFieldsPatches {
     @SpirePatch(
@@ -99,7 +94,7 @@ public class SetTextFieldsPatches {
             }
 
             return diffStr.replaceAll(" {2}(?=\\[diff)", " ").replaceAll("(?<=(Rmv|Add)[SE]]) {2}", " ");
-        } catch (DiffException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return upgraded;
         }

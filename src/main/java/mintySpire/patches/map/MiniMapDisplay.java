@@ -92,12 +92,12 @@ public class MiniMapDisplay {
 
 
         // DungeonMap.calculateMapSize()
-        float mapMidDist = AbstractDungeon.id
+        /*float mapMidDist = AbstractDungeon.id
                 .equals("TheEnding") ? Settings.MAP_DST_Y * 4.0F - 1380.0F * Settings.scale : Settings.MAP_DST_Y * 16.0F - 1380.0F * Settings.scale;
         ReflectionHacks
                 .setPrivate(AbstractDungeon.dungeonMapScreen.map, DungeonMap.class, "mapMidDist", mapMidDist);
         ReflectionHacks
-                .setPrivateStatic(DungeonMap.class, "mapOffsetY", mapMidDist - 120.0F * Settings.scale);
+                .setPrivateStatic(DungeonMap.class, "mapOffsetY", mapMidDist - 120.0F * Settings.scale);*/
 
 
         float savedTargetOffsetY = ReflectionHacks
@@ -139,8 +139,8 @@ public class MiniMapDisplay {
     )
     public static class Start {
         public static void Postfix(DungeonMapScreen unusedInstance, SpriteBatch sb) {
-            if (MintySpire
-                    .showMM() && !renderingMiniMap && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
+            if (MintySpire.showMM() && !renderingMiniMap && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP &&
+            AbstractDungeon.map.size() >= 10) {
                 renderMinimap(sb, -Settings.WIDTH / 2f, 50 * Settings.scale, CAMERA);
             }
         }
