@@ -39,11 +39,6 @@ public class MintyMetrics extends Metrics {
         SpireSuper.call(death, trueVictor, monsters);
         HashMap<Object, Object> data = getParams();
 
-        data.remove("is_prod");
-        data.remove("seed_source_timestamp");
-        data.remove("neow_cost");
-        data.remove("special_seed");
-
         //Fix win_rate field
         int numVictory = pref.getInteger("WIN_COUNT", 0);
         int numDeath = pref.getInteger("LOSE_COUNT", 0);
