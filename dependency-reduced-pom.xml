@@ -4,7 +4,7 @@
   <groupId>mintySpire</groupId>
   <artifactId>mintySpire</artifactId>
   <name>Minty Spire (QoL Compilation)</name>
-  <version>2.5.5</version>
+  <version>2.5.7</version>
   <description>A compilation of small QoL mods that make life a little more comfy in the spire.</description>
   <build>
     <resources>
@@ -104,7 +104,7 @@
   </dependencies>
   <properties>
     <ModTheSpire.version>3.15.0</ModTheSpire.version>
-    <Steam.path>K:/Steam/steamapps</Steam.path>
+    <Steam.path>E:/SteamLibrary/steamapps</Steam.path>
     <maven.compiler.source>1.8</maven.compiler.source>
     <SlayTheSpire.version>11-29-2020</SlayTheSpire.version>
     <maven.compiler.target>1.8</maven.compiler.target>
