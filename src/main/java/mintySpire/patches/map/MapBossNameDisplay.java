@@ -14,7 +14,7 @@ import com.megacrit.cardcrawl.screens.DungeonMapScreen;
 import mintySpire.MintySpire;
 
 public class MapBossNameDisplay {
-    private static Color oscillatingColor = Color.FIREBRICK;
+    private static Color oscillatingColor = Color.FIREBRICK.cpy();
     private static float oscillatingTimer = 0.0f;
     private static float oscillatingFader = 0.0f;
     private static String currentID;
