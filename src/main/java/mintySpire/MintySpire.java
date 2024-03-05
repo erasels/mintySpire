@@ -82,6 +82,7 @@ public class MintySpire implements
             defaults.put("PurgeCostDisplay", Boolean.toString(true));
             defaults.put("TurnDisplay", Boolean.toString(true));
             defaults.put("BiggerPowerFonts", Boolean.toString(false));
+            defaults.put("CreditsSkip", Boolean.toString(true));
             modConfig = new SpireConfig("MintySpire", "Config", defaults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,6 +199,13 @@ public class MintySpire implements
             return false;
         }
         return modConfig.getBool("BiggerPowerFonts");
+    }
+
+    public static boolean showCS() {
+        if (modConfig == null) {
+            return false;
+        }
+        return modConfig.getBool("CreditsSkip");
     }
 
     private float xPos = 350f, yPos = 750f, orgYPos = 750f;
@@ -490,6 +498,16 @@ public class MintySpire implements
                     });
             settingsPanel.addUIElement(FlipPageBtn);
         }
+        ModLabeledToggleButton CSBtn = new ModLabeledToggleButton(TEXT[18], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
+        },
+                button ->
+                {
+                    if (modConfig != null) {
+                        modConfig.setBool("CreditsSkip", button.enabled);
+                        saveConfig();
+                    }
+                });
+        registerUIElement(CSBtn, true);
 
         BaseMod.registerModBadge(ImageMaster.loadImage(getModID() + "Resources/img/modBadge.png"), getModID(), "erasels", "", settingsPanel);
 
