@@ -30,7 +30,6 @@ public class SkipCreditsAndNeowPatch {
                 CardCrawlGame.fadeToBlack(2.0F);
                 CardCrawlGame.music.fadeOutBGM();
                 CardCrawlGame.music.fadeOutTempBGM();
-                CardCrawlGame.music.changeBGM("MENU");
             } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {
                 e.printStackTrace();
