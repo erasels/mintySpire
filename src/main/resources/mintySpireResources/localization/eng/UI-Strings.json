@@ -18,7 +18,8 @@
       "Next Page",
       "Display the card removal cost when looking at the deck",
       "Display the current turn during combat",
-      "Increase size of power amounts in combat"
+      "Increase size of power amounts in combat",
+      "Skip victory credits and Neow monologue"
     ]
   },
   "mintySpire:GridselectHideButton": {
