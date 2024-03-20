@@ -498,7 +498,7 @@ public class MintySpire implements
                     });
             settingsPanel.addUIElement(FlipPageBtn);
         }
-        ModLabeledToggleButton CSBtn = new ModLabeledToggleButton(TEXT[18], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showSD(), settingsPanel, l -> {
+        ModLabeledToggleButton CSBtn = new ModLabeledToggleButton(TEXT[18], xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, showCS(), settingsPanel, l -> {
         },
                 button ->
                 {
