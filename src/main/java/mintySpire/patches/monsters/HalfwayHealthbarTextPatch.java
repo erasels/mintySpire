@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.monsters.beyond.TimeEater;
 import com.megacrit.cardcrawl.monsters.city.Champ;
 import com.megacrit.cardcrawl.monsters.exordium.AcidSlime_L;
 import com.megacrit.cardcrawl.monsters.exordium.SlimeBoss;
+import com.megacrit.cardcrawl.monsters.exordium.SpikeSlime_L;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
@@ -21,7 +22,7 @@ public class HalfwayHealthbarTextPatch {
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(FontHelper.class.getName()) && m.getMethodName().equals("renderFontCentered")) {
                         m.replace("{" +
-                                "if("+ MintySpire.class.getName() +".showHH() && ("+SlimeBoss.class.getName()+".ID.equals(this.id) || " +AcidSlime_L.class.getName()+".ID.equals(this.id) || " +  Champ.class.getName()+".ID.equals(this.id) || "+ TimeEater.class.getName()+".ID.equals(this.id))) {" +
+                                "if("+ MintySpire.class.getName() +".showHH() && ("+SlimeBoss.class.getName()+".ID.equals(this.id) || " +AcidSlime_L.class.getName()+".ID.equals(this.id) || " + SpikeSlime_L.class.getName()+".ID.equals(this.id) || "  +  Champ.class.getName()+".ID.equals(this.id) || "+ TimeEater.class.getName()+".ID.equals(this.id))) {" +
                                 "$3 += " + TextRender.class.getName() + ".getHPTextAddition(this);" +
                                 "}" +
                                 "$proceed($$);" +
