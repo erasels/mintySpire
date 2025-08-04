@@ -104,7 +104,7 @@ public class RelicAffectionPatch {
 
             if (cardFields.isPenAff.get(card) && combatCheck()) {
                 pNib.counter = -1;
-                pNib.currentX = card.current_x + (390.0f + (numRelics*pNib.img.getWidth())) * card.drawScale / 3.0f * Settings.scale;
+                pNib.currentX = card.current_x + 390.0f * card.drawScale / 3.0f * Settings.scale - AbstractRelic.PAD_X * 0.5f * numRelics * card.drawScale;
                 pNib.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale;
                 pNib.scale = card.drawScale;
                 pNib.renderOutline(sb, false);
