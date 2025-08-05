@@ -96,7 +96,7 @@ public class RelicAffectionPatch {
             if (cardFields.isNecroAff.get(card) && combatCheck()) {
                 nCon.currentX = card.current_x + 390.0f * card.drawScale / 3.0f * Settings.scale;
                 nCon.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale;
-                nCon.scale = card.drawScale;
+                nCon.scale = card.drawScale * Settings.scale;
                 nCon.renderOutline(sb, false);
                 nCon.render(sb);
                 numRelics++;
@@ -104,9 +104,9 @@ public class RelicAffectionPatch {
 
             if (cardFields.isPenAff.get(card) && combatCheck()) {
                 pNib.counter = -1;
-                pNib.currentX = card.current_x + (390.0f + (numRelics*pNib.img.getWidth())) * card.drawScale / 3.0f * Settings.scale;
-                pNib.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale;
-                pNib.scale = card.drawScale;
+                pNib.currentX = card.current_x + 390.0f * card.drawScale / 3.0f * Settings.scale;
+                pNib.currentY = card.current_y + 546.0f * card.drawScale / 3.0f * Settings.scale - AbstractRelic.PAD_X * 0.7f * numRelics * card.drawScale;
+                pNib.scale = card.drawScale * Settings.scale;
                 pNib.renderOutline(sb, false);
                 pNib.render(sb);
                 //numRelics++;
