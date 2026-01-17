@@ -1,5 +1,6 @@
 package mintySpire.patches.metrics;
 
+import basemod.BaseMod;
 import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
@@ -12,10 +13,7 @@ import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.metrics.Metrics;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.potions.FirePotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.relics.Circlet;
 import mintySpire.MintySpire;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,26 +65,16 @@ public class MintyMetrics extends Metrics {
             if(loc != -1 && StringUtils.isNumeric(s.substring(loc+1))) {
                 s = s.substring(0, loc);
             }
-            AbstractCard c = CardLibrary.getCard(s);
-            if(c != null) {
+
+            if(CardLibrary.cards.containsKey(s)) {
                 types.add("Card");
-                continue;
-            }
-
-            AbstractRelic r = RelicLibrary.getRelic(s);
-            if(r != null && !(r instanceof Circlet)) {
+            } else if(isRelicId(s)) {
                 types.add("Relic");
-                continue;
-            }
-
-            AbstractPotion p = PotionHelper.getPotion(s);
-            //Weird check because trying to get a potion that doesn't exist returns a fire potion
-            if(!(p instanceof FirePotion) || s.equals(FirePotion.POTION_ID)) {
+            } else if(PotionHelper.isAPotion(s)) {
                 types.add("Potion");
-                continue;
+            } else {
+                types.add("Undefined");
             }
-
-            types.add("Undefined");
         }
         addData("items_purchased_type", types);
 
@@ -113,5 +101,21 @@ public class MintyMetrics extends Metrics {
     @SpireOverride
     private void addData(Object key, Object value) {
         SpireSuper.call(key, value);
+    }
+
+    private static boolean isRelicId(String key) {
+        if (key == null) return false;
+        if (RelicLibrary.isARelic(key)) return true;
+
+        // BaseMod custom pools
+        // Mirrors BaseMod.getCustomRelic's scan but returns boolean instead of Circlet.
+        HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> pools = BaseMod.getAllCustomRelics();
+        if (pools != null) {
+            for (HashMap<String, AbstractRelic> map : pools.values()) {
+                if (map != null && map.containsKey(key)) return true;
+            }
+        }
+
+        return false;
     }
 }
